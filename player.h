@@ -5,7 +5,7 @@
   #include <GL/gl.h>
   #include <GL/glu.h>
 #endif
- 
+
 typedef struct _player{
 	float width;
 	float height;
@@ -21,3 +21,6 @@ void freePlayer(Player * thomas);
 
 void drawPlayer(Player * thomas);
 
+void setHSpeed(Player * thomas, float speed);
+
+void updatePlayerPos(Player * thomas);

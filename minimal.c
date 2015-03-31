@@ -59,6 +59,11 @@ int main(int argc, char** argv) {
 
   glPointSize(4);
 
+  //set player attributes
+  Player thomas;
+  initPlayer(&thomas);
+  setPlayerAttr(&thomas, 100.0, 200.0, 60.0, 0.0);
+
   int loop = 1;
   while(loop) {
 
@@ -70,22 +75,12 @@ int main(int argc, char** argv) {
     glMatrixMode(GL_MODELVIEW);
 
     glLoadIdentity();
-
-      Player thomas;
-      initPlayer(&thomas);
-      setPlayerAttr(&thomas, 100.0, 200.0, 0, -100);
-
-      //main arm
-      glScalef(50,100,1);
-
-
-      glLoadIdentity();
       drawRepere();
-      glLoadIdentity();
+
+    glLoadIdentity();
+
+      updatePlayerPos(&thomas);
       drawPlayer(&thomas);
-
-      freePlayer(&thomas);
-
 
 
 
@@ -107,8 +102,6 @@ int main(int argc, char** argv) {
         case SDL_MOUSEBUTTONUP:
         break;
 
-
-
         case SDL_VIDEORESIZE:
         break;
 
@@ -118,12 +111,30 @@ int main(int argc, char** argv) {
             case SDLK_ESCAPE :
               loop = 0;
               break;
+
+            case SDLK_RIGHT :
+              printf("right key pressed\n");
+              setHSpeed(&thomas, 1);
+              break;
+
+            case SDLK_LEFT :
+                printf("left key pressed\n");
+                setHSpeed(&thomas, -1);
+                break;
+
             default : break;
           }
           break;
 
-        default:
-          break;
+
+        case SDL_KEYUP:
+            switch(e.key.keysym.sym){
+              case SDLK_RIGHT :
+              case SDLK_LEFT :
+                setHSpeed(&thomas, 0);
+                break;
+            }
+          default:break;
       }
     }
 
@@ -133,6 +144,7 @@ int main(int argc, char** argv) {
     }
   }
 
+  freePlayer(&thomas);
   SDL_Quit();
 
   return EXIT_SUCCESS;
