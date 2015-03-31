@@ -7,14 +7,14 @@ A clone of the popular indie game Thomas Was Alone
 - Sweat
 
 ###todo
--fluid movement
--create & display solid blocks
--horizontal collision
--gravity (& vertical collision)
--jump
--multiple characters & end position
--camera movement
--win condition
+- fluid movement
+- create & display solid blocks
+- horizontal collision
+- gravity (& vertical collision)
+- jump
+- multiple characters & end position
+- camera movement
+- win condition
 
 -and moar
 
