@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
     fprintf(stderr, "Impossible d'initialiser la SDL. Fin du programme.\n");
     return EXIT_FAILURE;
   }
-   
+
   //antialiasing
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,6);
@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
     /* dessin */
     glClear(GL_COLOR_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
-    
+
     glLoadIdentity();
 
       Player thomas;
@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 
       //main arm
       glScalef(50,100,1);
-      
+
 
       glLoadIdentity();
       drawRepere();
@@ -86,15 +86,15 @@ int main(int argc, char** argv) {
 
       freePlayer(&thomas);
 
-     
+
 
 
     SDL_GL_SwapBuffers();
-    
+
 
     /****************
     EVENT HANDLER
-    ******************/  
+    ******************/
 
     SDL_Event e;
     while(SDL_PollEvent(&e)) {
@@ -102,38 +102,38 @@ int main(int argc, char** argv) {
         loop = 0;
         break;
       }
-      
+
       switch(e.type) {
         case SDL_MOUSEBUTTONUP:
         break;
 
 
-          
+
         case SDL_VIDEORESIZE:
         break;
 
         case SDL_KEYDOWN:
           switch(e.key.keysym.sym){
-            case 'q' : 
-            case SDLK_ESCAPE : 
+            case 'q' :
+            case SDLK_ESCAPE :
               loop = 0;
               break;
             default : break;
           }
           break;
-         
+
         default:
           break;
       }
     }
-    
+
     Uint32 elapsedTime = SDL_GetTicks() - startTime;
     if(elapsedTime < FRAMERATE_MILLISECONDS) {
       SDL_Delay(FRAMERATE_MILLISECONDS - elapsedTime);
     }
   }
-  
+
   SDL_Quit();
-  
+
   return EXIT_SUCCESS;
 }
