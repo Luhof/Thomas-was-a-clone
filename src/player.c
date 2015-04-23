@@ -44,11 +44,13 @@ void drawPlayer(Player * thomas){
 }
 
 void setHSpeed(Player * thomas, float speed){
-	printf("speed : %f\n", speed);
+	//printf("speed : %f\n", speed);
 	thomas->hspeed = speed;
-	printf("hspeed : %f\n", thomas->hspeed);
+	//printf("hspeed : %f\n", thomas->hspeed);
 }
 
 void updatePlayerPos(Player * thomas){
+	printf("speed : %f\n", thomas->hspeed);
 	thomas->posX += thomas->hspeed;
+	printf("%f\n", thomas->posX);
 }

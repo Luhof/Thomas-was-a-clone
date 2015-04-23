@@ -121,10 +121,11 @@ int main(int argc, char** argv) {
                 printf("left key pressed\n");
                 setHSpeed(&thomas, -1);
                 break;
-
             default : break;
+            
           }
           break;
+          
 
 
         case SDL_KEYUP:
@@ -133,9 +134,14 @@ int main(int argc, char** argv) {
               case SDLK_LEFT :
                 setHSpeed(&thomas, 0);
                 break;
+              default:break;
             }
-          default:break;
+            break;
+
+        default : break;
+
       }
+      break;
     }
 
     Uint32 elapsedTime = SDL_GetTicks() - startTime;
