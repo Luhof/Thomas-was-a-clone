@@ -16,7 +16,7 @@ A clone of the popular indie game Thomas Was Alone
 - camera movement
 - win condition
 
-- and moar
+-and moar
 
 ###IMAC Engineer's school 2015
 http://imac.alwaysdata.net/
