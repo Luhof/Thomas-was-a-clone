@@ -15,7 +15,6 @@ void drawSquare(int filled){
 }
 
 
-
 void drawRepere(){
   glBegin(GL_LINES);
   glColor3ub(255,0,0);
