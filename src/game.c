@@ -59,7 +59,7 @@ void launchGame(){
       setVSpeed(thomas, gravity);
       setHSpeed(thomas, thomas->dir*thomas->movespeed);
  
-     isColliding(thomas, walls, keyJump);
+      isColliding(thomas, walls, keyJump);
     
       updatePlayerPos(thomas);
       glColor3ub(240,158,162);

@@ -45,8 +45,8 @@ int main(int argc, char** argv) {
   }
 
   //antialiasing
-  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
-  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,6);
+  /*SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
+  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,6);*/
 
   setVideoMode(ratio, windowWidth, windowHeight);
 

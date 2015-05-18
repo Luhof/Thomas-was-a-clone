@@ -65,6 +65,7 @@ Player* initPlayer(){
 		float coordRightX = 	thomas->posX  + thomas->width/2.0;
 
 
+
 		for(i=0; i<3; i++){
 
 			float verticalDiff = 0.0;
@@ -74,21 +75,38 @@ Player* initPlayer(){
 			float wallLeft = 		walls[i]->posX - walls[i]->width/2.0;
 			float wallRight = 		walls[i]->posX + walls[i]->width/2.0;
 
-			if(		coordBottomY+thomas->vspeed+0.01 < wallTop
+			//vertical collision
+			if(	thomas->vspeed != 0
+				&&	coordBottomY+thomas->vspeed < wallTop
 				&&	coordTopY+thomas->vspeed > wallBottom
 				&&	coordRightX > wallLeft
 				&&	coordLeftX < wallRight)
 			{
-				thomas->vspeed = (keyJump * thomas->jumpspeed);	
-			}
 
+				//if player is FALLING
+				if(thomas->vspeed < 0){
+					verticalDiff =  (coordBottomY - wallTop);
+
+					//Since the player is on the ground he can jump !!
+					thomas->vspeed = (keyJump * thomas->jumpspeed);
+				}
+				//else if he is JUMPING
+				else if(thomas->vspeed > 0){
+					verticalDiff =  -1*(wallBottom - coordTopY);
+					thomas->vspeed = 0;
+				}
+				printf("verticalDiff = %f\n", verticalDiff);
+				thomas->posY -= verticalDiff;			
+			}
+			
 			//horizontal collision
-			if(	coordBottomY < wallTop
-				&&	coordTopY > wallBottom
+			if(	coordBottomY+thomas->vspeed+0.01 < wallTop
+				&&	coordTopY+thomas->vspeed+0.01 > wallBottom
 				&&	coordRightX+thomas->hspeed >= wallLeft
 				&&  coordLeftX+thomas->hspeed <= wallRight
 				)
 			{
+				printf("collides\n");
 				//if player is going RIGHT
 				if(thomas->hspeed > 0){
 					horizontalDiff = -1*(coordRightX - wallLeft);
@@ -98,27 +116,6 @@ Player* initPlayer(){
 					horizontalDiff = wallRight - coordLeftX;
 				}
 				thomas->hspeed = horizontalDiff;
-			}
-
-			//vertical collision
-			if(	thomas->vspeed != 0
-				&&	coordBottomY+thomas->vspeed < wallTop
-				&&	coordTopY+thomas->vspeed > wallBottom
-				&&	coordRightX > wallLeft
-				&&	coordLeftX < wallRight)
-			{
-				//if player is FALLING
-				if(thomas->vspeed < 0){
-					verticalDiff =  (coordBottomY - wallTop);
-					printf("verticalDiff = %f\n", verticalDiff);
-				}
-				//else if he is JUMPING
-				else if(thomas->vspeed > 0){
-					verticalDiff =  -1*(coordTopY - wallBottom);
-				}
-				thomas->posY += verticalDiff;
-				thomas->vspeed = 0;
-				
 			}
 		}
 
