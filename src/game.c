@@ -4,11 +4,16 @@ void launchGame(){
   
 	static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
 
-  glClearColor(230,223,215, 1); 
+  glClearColor(120,146,161, 1); 
   printf("game launched\n");
 
+
+  /** 
+  *INITIALIZING STUFF
+  **/
+
   //set room attribute
-  float gravity = -1.5;
+  float gravity = 0.3;
 
   //set player attributes
   Player *thomas = NULL;
@@ -17,12 +22,25 @@ void launchGame(){
   initPlayer(thomas);
   setPlayerAttr(thomas, 50.0, 100.0, 60.0, 40.0);
   printf("player initialized\n");
-  setVSpeed(thomas, gravity);
 
-  Wall *wall = NULL;
-  wall = initWall(wall);
-  setWallAttr(wall, 200.0, 25.0, 0.0, -100.0);
+  Wall* walls[3];
+  walls[0] = initWall(walls[0]);
+  setWallAttr(walls[0], 150.0, 25.0, 0.0, -100.0);
+  walls[1] = initWall(walls[1]);
+  setWallAttr(walls[1], 25.0, 150.0, 100.0, -50.0);
+  walls[2] = initWall(walls[2]);
+  setWallAttr(walls[2], 150.0, 25.0, 100.0, 150.0);
+  
   printf("wall initialized\n");
+
+  int keyJump = 0;
+  int keyLeft = 0;
+  int keyRight = 0;
+
+
+  /**
+  *STARTING LOOP
+  **/
 
   int loop = 1;
   printf("started loop\n");
@@ -36,18 +54,21 @@ void launchGame(){
     glMatrixMode(GL_MODELVIEW);
 
     glLoadIdentity();
-      drawRepere();
-
-    glLoadIdentity();
-
-      int collides = isColliding(thomas, wall, gravity);
-
+    
+      thomas->dir = keyLeft + keyRight;
+      setVSpeed(thomas, gravity);
+      setHSpeed(thomas, thomas->dir*thomas->movespeed);
+ 
+     isColliding(thomas, walls, keyJump);
+    
       updatePlayerPos(thomas);
       glColor3ub(240,158,162);
       drawPlayer(thomas);
 
-      glColor3ub(120,146,161);
-      drawWall(wall);
+      glColor3ub(230,223,215);
+      drawWall(walls[0]);
+      drawWall(walls[1]);
+      drawWall(walls[2]);
 
 
     SDL_GL_SwapBuffers();
@@ -78,14 +99,15 @@ void launchGame(){
               break;
 
             case SDLK_RIGHT :
-              printf("right key pressed\n");
-              setHSpeed(thomas, 1);
+              keyRight = 1;
               break;
 
             case SDLK_LEFT :
-                printf("left key pressed\n");
-                setHSpeed(thomas, -1);
-                break;
+              keyLeft = -1;
+              break;
+
+            case SDLK_SPACE : 
+              keyJump = 1;
             default : break;
             
           }
@@ -96,8 +118,13 @@ void launchGame(){
         case SDL_KEYUP:
             switch(e.key.keysym.sym){
               case SDLK_RIGHT :
+                keyRight = 0;
+                break;
               case SDLK_LEFT :
-                setHSpeed(thomas, 0);
+                keyLeft = 0;
+                break;
+              case SDLK_SPACE :
+                keyJump = 0;
                 break;
               default:break;
             }
@@ -116,7 +143,8 @@ void launchGame(){
   }
 
   free(thomas);
-  free(wall);
+  free(walls[0]);
+  free(walls[1]);
 
 }
 

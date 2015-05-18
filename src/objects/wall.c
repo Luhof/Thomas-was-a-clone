@@ -1,4 +1,4 @@
-#include "wall.h"
+#include "objects/wall.h"
 
 #include <stdlib.h>
 #include <stdio.h>

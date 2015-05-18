@@ -14,8 +14,8 @@
 #include <math.h>
 
 #include "basicShapes.h"
-#include "wall.h"
-#include "player.h"
+#include "objects/wall.h"
+#include "objects/player.h"
 
 
 

@@ -9,16 +9,21 @@
   #include <GL/glu.h>
 #endif
 
+
+
 #include "wall.h"
 
 
 typedef struct _player{
 	float width;
 	float height;
+	float movespeed;
+	float jumpspeed;
 	float hspeed;
 	float vspeed;
 	float posX;
 	float posY;
+	int dir;
 } Player;
 
 Player* initPlayer();
@@ -30,7 +35,7 @@ void drawPlayer(Player * thomas);
 void setHSpeed(Player * thomas, float speed);
 void setVSpeed(Player * thomas, float speed);
 
-int isColliding(Player * thomas, Wall * wall, float gravity);
+void isColliding(Player * thomas, Wall ** walls, int keyJump);
 
 void updatePlayerPos(Player * thomas);
 

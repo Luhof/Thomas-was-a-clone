@@ -39,7 +39,6 @@ int main(int argc, char** argv) {
   float ratio = windowWidth/(float)windowHeight;
 
 
-
   if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
     fprintf(stderr, "Impossible d'initialiser la SDL. Fin du programme.\n");
     return EXIT_FAILURE;
