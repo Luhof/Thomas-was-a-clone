@@ -53,20 +53,58 @@ void addPlayer(Players *playersList, Player *player){
 
 	playersList->firstPlayer = newPlayer;
 
+	
+
 	//dealing with IDs
 	
 	
 }
 
-void setHSpeed(Player * thomas, int dir){
-		
-		thomas->hspeed = dir * thomas->movespeed;
+void switchCharacter(Players * playersList){
+
+	Players * tempPlayer = playersList->firstPlayer;
+
+		while(tempPlayer!=NULL){
+			if(tempPlayer->player->isCurrentPlayer==1){
+				tempPlayer->player->isCurrentPlayer = 0;
+				tempPlayer = tempPlayer->nextPlayer;
+				if(tempPlayer!=NULL){
+					printf("switched characters it was not null\n");
+					tempPlayer->player->isCurrentPlayer = 1;
+					break;
+				}
+				
+					printf("switched characters it was null\n");
+					playersList->firstPlayer->player->isCurrentPlayer = 1;
+					break;
+				
+			}
+			tempPlayer=tempPlayer->nextPlayer;
+		}
+
+	
 
 }
 
-void setVSpeed(Player * thomas, float speed){
-	if(thomas->vspeed > -thomas->jumpspeed){
-		thomas->vspeed -= speed;
+void setHSpeed(Players * playersList, int dir){
+		
+	Players * tempPlayer = playersList->firstPlayer;
+
+	while(tempPlayer!=NULL){
+		if(tempPlayer->player->isCurrentPlayer)
+			tempPlayer->player->hspeed = dir * tempPlayer->player->movespeed;
+		tempPlayer = tempPlayer->nextPlayer;
+	}
+}
+
+void setVSpeed(Players * playersList, float gravity){
+
+	Players * tempPlayer = playersList->firstPlayer;
+	while(tempPlayer!=NULL){
+		if(tempPlayer->player->vspeed > -tempPlayer->player->jumpspeed){
+			tempPlayer->player->vspeed -= gravity;
+		}
+		tempPlayer = tempPlayer->nextPlayer;
 	}
 }
 

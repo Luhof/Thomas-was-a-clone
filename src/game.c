@@ -13,7 +13,7 @@ void launchGame(){
   /** 
   *INITIALIZING STUFF
   **/
-  Color colors[2] = {setColor(105, 210, 231), setColor(243,134,48) };
+  Color colors[3] = {setColor(105, 210, 231), setColor(243,134,48), setColor(155, 89, 182) };
 
   //set room attribute
   float gravity = 0.3;
@@ -21,16 +21,19 @@ void launchGame(){
   //set player attributes
   Players *playersList = initPlayerList();
   
-  Player *thomas = createPlayer(25.0, 50.0, 60.0, 40.0, 6.0, 8.0, colors[0]);
-  Player *marcel = createPlayer(70.0, 70.0, -30, 40.0, 10.0, 3.0, colors[1]);
+  Player *thomas = createPlayer(25.0, 50.0, 60.0, 40.0, 6.0, 5.0, colors[0]);
+  Player *marcel = createPlayer(70.0, 70.0, -30, 40.0, 4.0, 3.0, colors[1]);
+  Player *pouity = createPlayer(15.0, 80.0, -50, 40.0, 5.0, 9.0, colors[2]);
   thomas->isCurrentPlayer = 1;
   addPlayer(playersList, marcel);
-  printf("marcel is player %d\n", marcel->id);
-  printf("thomas is player %d\n", thomas->id);
+
   addPlayer(playersList, thomas);
+  addPlayer(playersList, pouity);
+    printf("marcel is player %d\n", marcel->id);
+  printf("thomas is player %d\n", thomas->id);
 
   printf("player initialized\n");
-  drawThumbnails(playersList);
+
 
   Walls* wallsList = initWallList();
   Wall * wall1 = createWall(300.0, 25.0, -250.0, -100.0);
@@ -45,6 +48,7 @@ void launchGame(){
   int keyJump = 0;
   int keyLeft = 0;
   int keyRight = 0;
+  int keySwitch = 0;
 
   /*float angle = 0;
   float screenRotateSpeed = 0.1;*/
@@ -73,6 +77,8 @@ void launchGame(){
     
     glLoadIdentity();
 
+    if(keySwitch) switchCharacter(playersList);
+    drawThumbnails(playersList);
 
      //ça c'est juste pour la frime
 /*    if(angle > 10 || angle < -10){
@@ -83,9 +89,8 @@ void launchGame(){
 
 
       //set speed depending on gravity and player input
-      setVSpeed(thomas, gravity);
-      setVSpeed(marcel, gravity);
-      setHSpeed(thomas, keyLeft + keyRight);
+      setVSpeed(playersList, gravity);
+      setHSpeed(playersList, keyLeft + keyRight);
   
       //use of pseudo-physics to check collisions and jumps
       isColliding(playersList, wallsList, keyJump);
@@ -93,6 +98,7 @@ void launchGame(){
     
       updatePlayerPos(thomas);
       updatePlayerPos(marcel);
+      updatePlayerPos(pouity);
       
       drawPlayers(playersList);
 
@@ -101,6 +107,7 @@ void launchGame(){
 
 
       keyJump = 0;
+      keySwitch = 0;
 
     SDL_GL_SwapBuffers();
 
@@ -120,6 +127,7 @@ void launchGame(){
 
 
         case SDL_JOYBUTTONDOWN:
+
           switch(e.jbutton.button)
           {
               case 4 :  //button "Start" pressed
@@ -132,6 +140,7 @@ void launchGame(){
         break;
 
         case SDL_JOYAXISMOTION:
+          printf("button rpesde : %d\n", e.jaxis.axis);
           switch(e.jaxis.axis){
             case 0 :
 
@@ -180,6 +189,13 @@ void launchGame(){
               if(keyJump == 0){
                 keyJump = 1;
               }
+              break;
+            case SDLK_TAB :
+              keySwitch = 1;
+            break;
+
+
+
             default : break;
             
           }
@@ -198,6 +214,7 @@ void launchGame(){
               case SDLK_SPACE :
                 keyJump = 0;
                 break;
+
               default:break;
             }
             break;

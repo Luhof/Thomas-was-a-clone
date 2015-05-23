@@ -2,16 +2,37 @@
 #include "draw.h"
 
 void drawThumbnails(Players * playersList){
-	  
-	glPushMatrix();
-		glColor3ub(100,50,20);
-		glBegin(GL_QUADS);
-		glVertex2f(-50.0, -50.0);
-		glVertex2f(50.0, -50.0);
-		glVertex2f(15.0, 15.0);
-		glVertex2f(-15.0, 15.0);
-		glEnd();
-	glPopMatrix();
+	float ratio = 1200.0/600.0;
+	int i = 0;
+	Players * tempPlayer = playersList->firstPlayer;
+
+	while(tempPlayer != NULL){
+		glPushMatrix();
+			glTranslatef((-250.0*ratio)+15+(30*i), -235.0, 0);
+			glColor3ub(tempPlayer->player->color.r,tempPlayer->player->color.g,tempPlayer->player->color.b);
+			glBegin(GL_QUADS);
+			glVertex2f(-15.0, -15.0);
+			glVertex2f(15.0, -15.0);
+			glVertex2f(15.0, 15.0);
+			glVertex2f(-15.0, 15.0);
+			glEnd();
+		glPopMatrix();
+		
+		if(tempPlayer->player->isCurrentPlayer){
+			glPushMatrix();
+				glTranslatef((-250.0*ratio)+15+(30*i), -205.0, 0);
+				glColor3ub(255,255,255);
+				glBegin(GL_TRIANGLES);
+				glVertex2f(-10, 10);
+				glVertex2f(10, 10);
+				glVertex2f(0, -7.50);
+			glEnd();
+			glPopMatrix();
+		}
+		i++;
+		tempPlayer = tempPlayer->nextPlayer;
+	}
+	
 }
 
 void drawPlayers(Players * playersList){

@@ -13,7 +13,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "basicShapes.h"
 #include "objects/wall.h"
 #include "objects/player.h"
 

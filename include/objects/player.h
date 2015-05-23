@@ -41,9 +41,9 @@ Players* initPlayerList();
 Player * createPlayer(float width, float height, float posX, float posY, float movespeed, float jumpspeed, Color color);
 
 void addPlayer(Players *playersList, Player *player);
-
-void setHSpeed(Player * thomas, int dir);
-void setVSpeed(Player * thomas, float speed);
+void switchCharacter(Players * playersList);
+void setHSpeed(Players * playersList, int dir);
+void setVSpeed(Players * playersList, float gravity);
 
 void isColliding(Players * playersList, Walls * wallsList, int keyJump);
 
