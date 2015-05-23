@@ -1,13 +1,20 @@
-# Thomas was a Clone
-A clone of the popular indie game Thomas Was Alone
+# Thomas was a Clone (work in progress)
+IMAC 2017 (1st year) OpenGL2 student project <br/>
+A clone of the popular indie game Thomas Was Alone.<br/>
+-> makefile provided is working with mac OSX. Please use another one if you are on an UNIX os !
 
 ##Tech used
-- OpenGL
+- OpenGL2
+- SDL
 - C
 - Sweat
 
+###done
+- Collision system and basic physics (jumps, gravity)
+- Draw engine
+- Xbox360 controller support
+
 ###todo
-- Meilleure organisation (tout ce qui se draw dans draw.c)
 - Dessiner murs dans une liste ou calloc.
 - Plusieurs bonhommes, on en joue qu'un à la fois, fonction pour changer le perso joueur.
 - Condition de fin (position finale)
@@ -21,4 +28,3 @@ A clone of the popular indie game Thomas Was Alone
 - Inversion de la gravité ?
 - Double saut
 - Machin pour rebondir
-- Support manette
