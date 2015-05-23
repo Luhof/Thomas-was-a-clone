@@ -1,37 +1,56 @@
 #include "objects/wall.h"
+#include "objects/player.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 
-Wall* initWall(){
-	Wall *wall = calloc(1, sizeof(Wall));
-
-    if(wall==NULL){
-        fprintf(stderr, "Error initializing wall :(");
+Walls* initWallList(){
+	
+	Walls *list = calloc(1, sizeof(Walls));
+	
+	if(list==NULL){
+        fprintf(stderr, "Error initializing walls list:(");
         exit(1);
     }
 
-    return wall;
+    list->wall = NULL;
+    list->nextWall = NULL;
+
+    return list;
 }
 
-void setWallAttr(Wall * wall, float width, float height, float posX, float posY){
-	wall->width = width;
-	wall->height = height;
-	wall->posX = posX;
-	wall->posY = posY;
+
+void addWall(Walls * wallsList, Wall *wall){
+
+	//on créé le nouveau mur
+	Walls * newWall = calloc(1, sizeof(Walls));
+
+	if(wallsList == NULL || newWall == NULL) exit(1);
+
+	newWall->wall = wall;
+	newWall->nextWall = wallsList->firstWall;
+
+	wallsList->firstWall = newWall;
+
+	//on ajoute le 
+	
+	
+		//printf("tempNode nextWall posX : %f\n", tempNode->nextWall->wall->posX);
+
 }
 
-void drawWall(Wall * wall){
 
-	float width = wall->width;
-	float height = wall->height;
-	glPushMatrix();
-		glTranslatef(wall->posX, wall->posY, 0);
-		glBegin(GL_QUADS);
-			glVertex2f(-(width/2.0), -(height/2.0));
-			glVertex2f((width/2.0), -(height/2.0));
-			glVertex2f((width/2.0), (height/2.0));
-			glVertex2f(-(width/2.0), (height/2.0));
-		glEnd();
-	glPopMatrix();
+Wall* createWall(float width, float height, float posX, float posY){
+	Wall* newWall = calloc(1, sizeof(Wall));
+	newWall->width = width;
+	newWall->height = height;
+	newWall->posX = posX;
+	newWall->posY = posY;
+
+	return newWall;
+}
+
+void wallsCollision(Walls * wallsList, Player * player){
+		
+
 }

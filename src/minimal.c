@@ -39,14 +39,19 @@ int main(int argc, char** argv) {
   float ratio = windowWidth/(float)windowHeight;
 
 
-  if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
+  if(-1 == SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK)) {
     fprintf(stderr, "Impossible d'initialiser la SDL. Fin du programme.\n");
     return EXIT_FAILURE;
   }
+  
+  SDL_Joystick *joystick; // attention, c'est bien un pointeur !
+  joystick = SDL_JoystickOpen(0);
+
+  SDL_JoystickEventState(SDL_ENABLE);
 
   //antialiasing
-  /*SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
-  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,6);*/
+  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
+  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,6);
 
   setVideoMode(ratio, windowWidth, windowHeight);
 
@@ -55,6 +60,8 @@ int main(int argc, char** argv) {
   glPointSize(4);
 
   launchGame();
+
+  SDL_JoystickClose(joystick);
 
   SDL_Quit();
 

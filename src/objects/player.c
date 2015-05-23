@@ -1,127 +1,97 @@
 #include <stdio.h>
 #include <stdlib.h>
-#
+#include "physics.h"
 #include "objects/player.h"
+#include "objects/wall.h"
 
 
 
-Player* initPlayer(){
-	Player* thomas = calloc(1, sizeof(Player));
+Players* initPlayerList(){
+	
+	Players *playersList = calloc(1, sizeof(Players));
+	
+	if(playersList==NULL){
+        fprintf(stderr, "Error initializing players list:(");
+        exit(1);
+    }
 
-	if(thomas==NULL){
-		fprintf(stderr, "Error initializing player :(");
-			exit(1);
-		}
-		return thomas;
+    playersList->player = NULL;
+    playersList->nextPlayer = NULL;
+
+    return playersList;
+}
+
+Player * createPlayer(float width, float height, float posX, float posY, float movespeed, float jumpspeed, Color color){
+	Player * newPlayer = calloc(1, sizeof(Player));
+	if(newPlayer==NULL) exit(1);
+	newPlayer->isCurrentPlayer = 0;
+	newPlayer->width = width;
+	newPlayer->height = height;
+	newPlayer->posX = posX;
+	newPlayer->posY = posY;
+	newPlayer->color = color;
+	newPlayer->movespeed = movespeed;
+	newPlayer->jumpspeed = jumpspeed;
+	newPlayer->hspeed = 0.0;
+	newPlayer->vspeed = 0.0;
+
+	return newPlayer;
+
+}
+
+void addPlayer(Players *playersList, Player *player){
+	
+	Players * newPlayer = calloc(1, sizeof(Players));
+
+	if(playersList == NULL || newPlayer == NULL) exit(1);
+
+	if(playersList->firstPlayer==NULL) player->id = 0;
+	else player->id = (playersList->firstPlayer->player->id) + 1;
+
+	newPlayer->player = player;
+	newPlayer->nextPlayer = playersList->firstPlayer;
+
+	playersList->firstPlayer = newPlayer;
+
+	//dealing with IDs
+	
+	
+}
+
+void setHSpeed(Player * thomas, int dir){
+		
+		thomas->hspeed = dir * thomas->movespeed;
+
+}
+
+void setVSpeed(Player * thomas, float speed){
+	if(thomas->vspeed > -thomas->jumpspeed){
+		thomas->vspeed -= speed;
+	}
+}
+
+void isColliding(Players * playersList,  Walls * wallsList, int keyJump){
+
+	Players * tempPlayer = playersList->firstPlayer;
+
+	while(tempPlayer!=NULL){
+
+		Player * player = tempPlayer->player;
+
+
+		//COLLISION WITH WALLS
+
+		playerWallCollisions(player, wallsList, keyJump);
+		playerPlayerCollisions(player, playersList, keyJump);
+
+		tempPlayer = tempPlayer->nextPlayer;
 	}
 
-	void setPlayerAttr(Player * thomas, float width, float height, float posX, float posY){
-		thomas->width = width;
-		thomas->height = height;
-		thomas->posX = posX;
-		thomas->posY = posY;
-		thomas->movespeed = 6.0;
-		thomas->jumpspeed = 10.0;
-		thomas->hspeed = 0.0;
-		thomas->vspeed = 0.0;
-		thomas->dir = 0;
-	}
+	
 
+}
 
-	void drawPlayer(Player * thomas){
-
-		float width = thomas->width;
-		float height = thomas->height;
-		glPushMatrix();
-		glTranslatef(thomas->posX, thomas->posY, 0);
-		glBegin(GL_QUADS);
-		glVertex2f(-(width/2.0), -(height/2.0));
-		glVertex2f((width/2.0), -(height/2.0));
-		glVertex2f((width/2.0), (height/2.0));
-		glVertex2f(-(width/2.0), (height/2.0));
-		glEnd();
-		glPopMatrix();
-	}
-
-	void setHSpeed(Player * thomas, float speed){
-		thomas->hspeed = speed;
-	}
-
-	void setVSpeed(Player * thomas, float speed){
-		if(thomas->vspeed > -thomas->jumpspeed){
-			thomas->vspeed -= speed;
-		}
-
-	}
-
-	void isColliding(Player * thomas, Wall ** walls, int keyJump){
-
-
-		int i;
-
-		float coordBottomY =	thomas->posY - thomas->height/2.0;
-		float coordTopY = 		thomas->posY + thomas->height/2.0;
-		float coordLeftX = 		thomas->posX - thomas->width/2.0;
-		float coordRightX = 	thomas->posX  + thomas->width/2.0;
-
-
-
-		for(i=0; i<3; i++){
-
-			float verticalDiff = 0.0;
-			float horizontalDiff = 0.0;
-			float wallTop = 		walls[i]->posY + walls[i]->height/2.0;
-			float wallBottom = 		walls[i]->posY - walls[i]->height/2.0;
-			float wallLeft = 		walls[i]->posX - walls[i]->width/2.0;
-			float wallRight = 		walls[i]->posX + walls[i]->width/2.0;
-
-			//vertical collision
-			if(	thomas->vspeed != 0
-				&&	coordBottomY+thomas->vspeed < wallTop
-				&&	coordTopY+thomas->vspeed > wallBottom
-				&&	coordRightX > wallLeft
-				&&	coordLeftX < wallRight)
-			{
-
-				//if player is FALLING
-				if(thomas->vspeed < 0){
-					verticalDiff =  (coordBottomY - wallTop);
-
-					//Since the player is on the ground he can jump !!
-					thomas->vspeed = (keyJump * thomas->jumpspeed);
-				}
-				//else if he is JUMPING
-				else if(thomas->vspeed > 0){
-					verticalDiff =  -1*(wallBottom - coordTopY);
-					thomas->vspeed = 0;
-				}
-				printf("verticalDiff = %f\n", verticalDiff);
-				thomas->posY -= verticalDiff;			
-			}
-			
-			//horizontal collision
-			if(	coordBottomY+thomas->vspeed+0.01 < wallTop
-				&&	coordTopY+thomas->vspeed+0.01 > wallBottom
-				&&	coordRightX+thomas->hspeed >= wallLeft
-				&&  coordLeftX+thomas->hspeed <= wallRight
-				)
-			{
-				printf("collides\n");
-				//if player is going RIGHT
-				if(thomas->hspeed > 0){
-					horizontalDiff = -1*(coordRightX - wallLeft);
-				}
-				//else if player is going LEFT
-				else if(thomas->hspeed < 0){
-					horizontalDiff = wallRight - coordLeftX;
-				}
-				thomas->hspeed = horizontalDiff;
-			}
-		}
-
-	}
-
-	void updatePlayerPos(Player * thomas){
-		thomas->posX += thomas->hspeed;
-		thomas->posY += thomas->vspeed;
-	}
+void updatePlayerPos(Player * thomas){
+	thomas->posX += thomas->hspeed;
+	thomas->posY += thomas->vspeed;
+}

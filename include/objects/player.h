@@ -1,3 +1,5 @@
+
+
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 
@@ -9,12 +11,14 @@
   #include <GL/glu.h>
 #endif
 
-
-
+#include "../colors.h"
 #include "wall.h"
 
 
+
 typedef struct _player{
+	int id;
+	int isCurrentPlayer;
 	float width;
 	float height;
 	float movespeed;
@@ -23,19 +27,25 @@ typedef struct _player{
 	float vspeed;
 	float posX;
 	float posY;
-	int dir;
+	Color color;
 } Player;
 
-Player* initPlayer();
-void setPlayerAttr(Player * thomas, float width, float height, float posX, float posY);
-void freePlayer(Player * thomas);
+typedef struct _players{
+	struct _player *player;
+	struct _players *nextPlayer;
+	struct _players *firstPlayer;
+} Players;
 
-void drawPlayer(Player * thomas);
 
-void setHSpeed(Player * thomas, float speed);
+Players* initPlayerList();
+Player * createPlayer(float width, float height, float posX, float posY, float movespeed, float jumpspeed, Color color);
+
+void addPlayer(Players *playersList, Player *player);
+
+void setHSpeed(Player * thomas, int dir);
 void setVSpeed(Player * thomas, float speed);
 
-void isColliding(Player * thomas, Wall ** walls, int keyJump);
+void isColliding(Players * playersList, Walls * wallsList, int keyJump);
 
 void updatePlayerPos(Player * thomas);
 
