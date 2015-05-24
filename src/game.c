@@ -21,13 +21,14 @@ void launchGame(){
   //set player attributes
   Players *playersList = initPlayerList();
   
-  Player *thomas = createPlayer(25.0, 50.0, 60.0, 40.0, 6.0, 5.0, colors[0]);
+  Player *thomas = createPlayer(25.0, 50.0, 60.0, 40.0, 6.0, 7.5, colors[0]);
   Player *marcel = createPlayer(70.0, 70.0, -30, 40.0, 4.0, 3.0, colors[1]);
-  Player *pouity = createPlayer(15.0, 80.0, -50, 40.0, 5.0, 9.0, colors[2]);
+  Player *pouity = createPlayer(15.0, 80.0, -100, 40.0, 5.0, 9.0, colors[2]);
   thomas->isCurrentPlayer = 1;
-  addPlayer(playersList, marcel);
+
 
   addPlayer(playersList, thomas);
+  addPlayer(playersList, marcel);
   addPlayer(playersList, pouity);
     printf("marcel is player %d\n", marcel->id);
   printf("thomas is player %d\n", thomas->id);
@@ -186,6 +187,7 @@ void launchGame(){
               break;
 
             case SDLK_SPACE :
+            case SDLK_UP:
               if(keyJump == 0){
                 keyJump = 1;
               }
@@ -212,6 +214,7 @@ void launchGame(){
                 keyLeft = 0;
                 break;
               case SDLK_SPACE :
+              case SDLK_UP:
                 keyJump = 0;
                 break;
 
