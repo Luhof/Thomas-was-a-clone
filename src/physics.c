@@ -44,7 +44,7 @@ void playerWallCollisions(Player * player, Walls * wallsList, int keyJump){
 			if(player->vspeed < 0){
 				verticalDiff = (coordBottomY - wallTop);
 				//Since the player is on the ground he can jump !!
-				if(player->isCurrentPlayer==1 && player->isHolding!=1)
+				if(player->isCurrentPlayer==1 && player->isHolding==NULL)
 					player->vspeed = (keyJump * player->jumpspeed);
 				else player->vspeed = 0;
 			}
@@ -125,23 +125,24 @@ void playerPlayerCollisions(Player * player, Players *playersList, Walls * walls
 				** vertical collision
 				**/
 				if(player->vspeed!=0 &&
-				placeMeeting(coordTopY+player->vspeed, coordRightX, coordBottomY+player->vspeed-1, coordLeftX, coordTopY2, coordRightX2, coordBottomY2, coordLeftX2)==1)
+				placeMeeting(coordTopY+player->vspeed, coordRightX+player->hspeed, coordBottomY+player->vspeed-1, coordLeftX, coordTopY2, coordRightX2, coordBottomY2, coordLeftX2)==1)
 				{
 					
 					
-					//if player is FALLING, he is on the top of the bottom player...	
+					//if player is FALLING, he is on the top of the bottom player (player2)...	
 					if(player->vspeed < 0){
 						verticalDiff = (coordBottomY - coordTopY2);
-						player->hspeed += player2->hspeed;
+
+						player->isHolding = player2;
+							
 						//Since the player is on the ground he can jump !!
-						if(player->isCurrentPlayer==1 && player->isHolding != 1){
+						if(player->isCurrentPlayer==1 && player->isHolding == NULL){
 							player->vspeed = (keyJump * player->jumpspeed);
 						}
 						else player->vspeed = 0;
-
-						player2->isHolding = 1;
-						playerPlayerCollisions(player, playersList, wallsList, keyJump);
-						playerWallCollisions(player, wallsList, keyJump);
+						
+						//playerPlayerCollisions(player, playersList, wallsList, keyJump);
+						//playerWallCollisions(player, wallsList, keyJump);
 					}
 
 					//else if he is JUMPING
@@ -149,11 +150,14 @@ void playerPlayerCollisions(Player * player, Players *playersList, Walls * walls
 						verticalDiff =  -1*(coordBottomY2 - coordTopY);
 						player->vspeed = 0;
 						player2->vspeed = player->vspeed;
-						player->isHolding = 1;
+						player2->isHolding = player;
 					}
+
+
 					player->posY -= verticalDiff; 
 								
 				}
+
 
 
 				

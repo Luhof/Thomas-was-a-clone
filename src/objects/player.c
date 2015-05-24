@@ -34,7 +34,7 @@ Player * createPlayer(float width, float height, float posX, float posY, float m
 	newPlayer->jumpspeed = jumpspeed;
 	newPlayer->hspeed = 0.0;
 	newPlayer->vspeed = 0.0;
-	newPlayer->isHolding = 0;
+	newPlayer->isHolding = NULL;
 
 	return newPlayer;
 
@@ -70,12 +70,9 @@ void switchCharacter(Players * playersList){
 				tempPlayer->player->isCurrentPlayer = 0;
 				tempPlayer = tempPlayer->nextPlayer;
 				if(tempPlayer!=NULL){
-					printf("switched characters it was not null\n");
 					tempPlayer->player->isCurrentPlayer = 1;
 					break;
 				}
-				
-					printf("switched characters it was null\n");
 					playersList->firstPlayer->player->isCurrentPlayer = 1;
 					break;
 				
@@ -90,11 +87,24 @@ void switchCharacter(Players * playersList){
 void setHSpeed(Players * playersList, int dir){
 		
 	Players * tempPlayer = playersList->firstPlayer;
-
 	while(tempPlayer!=NULL){
-		if(tempPlayer->player->isCurrentPlayer)
+
+		if(tempPlayer->player->isHolding!=NULL){
+			tempPlayer->player->hspeed = tempPlayer->player->isHolding->hspeed;
+			tempPlayer->player->isHolding=NULL;
+		}
+
+		if(tempPlayer->player->isCurrentPlayer){
 			tempPlayer->player->hspeed = dir * tempPlayer->player->movespeed;
-		else tempPlayer->player->hspeed = 0;
+
+		}
+			
+		
+
+
+		
+		
+
 		tempPlayer = tempPlayer->nextPlayer;
 	}
 }
@@ -121,11 +131,11 @@ void isColliding(Players * playersList,  Walls * wallsList, int keyJump){
 
 		playerWallCollisions(player, wallsList, keyJump);
 		playerPlayerCollisions(player, playersList, wallsList, keyJump);
-		playerWallCollisions(player, wallsList, keyJump);
 
-		player->isHolding = 0;
 		tempPlayer = tempPlayer->nextPlayer;
 	}
+
+
 
 	
 

@@ -19,7 +19,7 @@
 typedef struct _player{
 	int id;
 	int isCurrentPlayer;
-	int isHolding;
+	struct _player * isHolding;
 	float width;
 	float height;
 	float movespeed;
