@@ -22,29 +22,32 @@ void launchGame(){
   Players *playersList = initPlayerList();
   
   Player *thomas = createPlayer(25.0, 50.0, -45.0, 100.0, 4.0, 10.0, colors[0]);
-  Player *marcel = createPlayer(70.0, 70.0, -30, 40.0, 4.0, 10.0, colors[1]);
+  Player *marcel = createPlayer(70.0, 70.0, -30, 40.0, 4.0, 15.0, colors[1]);
   Player *pouity = createPlayer(15.0, 80.0, -100, 40.0, 4.0, 10.0, colors[2]);
+  Player *pouitye = createPlayer(15.0, 80.0, 250.0, -40.0, 4.0, 10.0, colors[0]);
   thomas->isCurrentPlayer = 1;
 
 
   addPlayer(playersList, pouity);
+  addPlayer(playersList, pouitye);
   addPlayer(playersList, marcel);
   addPlayer(playersList, thomas);
 
 
   printf("marcel is player %d\n", marcel->id);
   printf("thomas is player %d\n", thomas->id);
+  printf("pouity2 is player %d\n", pouitye->id);
 
   printf("player initialized\n");
 
 
   Walls* wallsList = initWallList();
-  Wall * wall1 = createWall(300.0, 25.0, -250.0, -100.0);
-  Wall * wall2 = createWall(25.0, 150.0, 100.0, -50.0);
-  Wall * wall3 = createWall(300.0, 25.0, 100.0, -100.0);
-  addWall(wallsList, wall1);
-  addWall(wallsList, wall2);
+  Wall * wall1 = createWall(300.0, 75.0, -250.0, -100.0);
+  Wall * wall2 = createWall(250.0, 75.0, 200.0, 100.0);
+  Wall * wall3 = createWall(300.0, 75.0, 100.0, -100.0);
   addWall(wallsList, wall3);
+  addWall(wallsList, wall2);
+  addWall(wallsList, wall1);
 
   printf("wall initialized\n");
 
@@ -105,6 +108,7 @@ void launchGame(){
       thomas->isHolding = NULL;
       marcel->isHolding = NULL;
       pouity->isHolding = NULL;
+      pouitye->isHolding = NULL;
 
       printf("speeds\n%f\n%f\n%f\n***\n", thomas->hspeed, marcel->hspeed, pouity->hspeed);
 
@@ -112,6 +116,7 @@ void launchGame(){
       updatePlayerPos(thomas);
       updatePlayerPos(marcel);
       updatePlayerPos(pouity);
+      updatePlayerPos(pouitye);
 
       drawPlayers(playersList);
 

@@ -123,12 +123,16 @@ void isColliding(Players * playersList,  Walls * wallsList, int keyJump){
 		if(player->isHolding!=NULL && player->isCurrentPlayer!=1){
 			
 			Player * tempParent = player->isHolding;
-				if(tempParent->isHolding!=NULL && tempParent->isCurrentPlayer!=1){
+				while(tempParent->isHolding!=NULL && tempParent->isCurrentPlayer!=1){
+					//playerPlayerCollisions(player->isHolding, playersList, wallsList, keyJump);
+					//playerWallCollisions(player->isHolding, wallsList, keyJump);
 					tempParent->hspeed = tempParent->isHolding->hspeed;
+					tempParent = tempParent->isHolding;
 				}
 
-			playerWallCollisions(player->isHolding, wallsList, keyJump);
+			
 			playerPlayerCollisions(player->isHolding, playersList, wallsList, keyJump);
+			playerWallCollisions(player->isHolding, wallsList, keyJump);
 
 			player->hspeed = player->isHolding->hspeed;
 			//here need to add a loop for parents...
