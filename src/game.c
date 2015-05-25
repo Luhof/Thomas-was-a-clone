@@ -21,14 +21,16 @@ void launchGame(){
   //set player attributes
   Players *playersList = initPlayerList();
   
-  Player *thomas = createPlayer(25.0, 50.0, 60.0, 40.0, 4.0, 10.0, colors[0]);
+  Player *thomas = createPlayer(25.0, 50.0, -45.0, 100.0, 4.0, 10.0, colors[0]);
   Player *marcel = createPlayer(70.0, 70.0, -30, 40.0, 4.0, 10.0, colors[1]);
   Player *pouity = createPlayer(15.0, 80.0, -100, 40.0, 4.0, 10.0, colors[2]);
   thomas->isCurrentPlayer = 1;
 
+
   addPlayer(playersList, pouity);
   addPlayer(playersList, marcel);
   addPlayer(playersList, thomas);
+
 
   printf("marcel is player %d\n", marcel->id);
   printf("thomas is player %d\n", thomas->id);
@@ -91,15 +93,26 @@ void launchGame(){
 
       //set speed depending on gravity and player input
       setVSpeed(playersList, gravity);
+      
       setHSpeed(playersList, keyLeft + keyRight);
-  
+
+      //need to add update flags or smth like that.
+      //SKETCH SHIET
+
       //use of pseudo-physics to check collisions and jumps
       isColliding(playersList, wallsList, keyJump);
+
+      thomas->isHolding = NULL;
+      marcel->isHolding = NULL;
+      pouity->isHolding = NULL;
+
+      printf("speeds\n%f\n%f\n%f\n***\n", thomas->hspeed, marcel->hspeed, pouity->hspeed);
+
       
       updatePlayerPos(thomas);
       updatePlayerPos(marcel);
       updatePlayerPos(pouity);
-      
+
       drawPlayers(playersList);
 
       glColor3ub(230,223,215);

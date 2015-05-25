@@ -89,21 +89,11 @@ void setHSpeed(Players * playersList, int dir){
 	Players * tempPlayer = playersList->firstPlayer;
 	while(tempPlayer!=NULL){
 
-		if(tempPlayer->player->isHolding!=NULL){
-			tempPlayer->player->hspeed = tempPlayer->player->isHolding->hspeed;
-			tempPlayer->player->isHolding=NULL;
-		}
+		tempPlayer->player->hspeed = 0;
 
 		if(tempPlayer->player->isCurrentPlayer){
 			tempPlayer->player->hspeed = dir * tempPlayer->player->movespeed;
-
 		}
-			
-		
-
-
-		
-		
 
 		tempPlayer = tempPlayer->nextPlayer;
 	}
@@ -122,20 +112,48 @@ void setVSpeed(Players * playersList, float gravity){
 
 void isColliding(Players * playersList,  Walls * wallsList, int keyJump){
 
+	getParents(playersList);
+
 	Players * tempPlayer = playersList->firstPlayer;
 
 	while(tempPlayer!=NULL){
 
 		Player * player = tempPlayer->player;
-		//COLLISION WITH WALLS
 
-		playerWallCollisions(player, wallsList, keyJump);
+		if(player->isHolding!=NULL && player->isCurrentPlayer!=1){
+			
+			Player * tempParent = player->isHolding;
+				if(tempParent->isHolding!=NULL && tempParent->isCurrentPlayer!=1){
+					tempParent->hspeed = tempParent->isHolding->hspeed;
+				}
+
+			playerWallCollisions(player->isHolding, wallsList, keyJump);
+			playerPlayerCollisions(player->isHolding, playersList, wallsList, keyJump);
+
+			player->hspeed = player->isHolding->hspeed;
+			//here need to add a loop for parents...
+		}
+
 		playerPlayerCollisions(player, playersList, wallsList, keyJump);
-
+		playerWallCollisions(player, wallsList, keyJump);
 		tempPlayer = tempPlayer->nextPlayer;
 	}
 
 
+
+	/*tempPlayer = playersList->firstPlayer;
+	while(tempPlayer!=NULL){
+
+		Player * player = tempPlayer->player;
+
+		if(player->isHolding!=NULL){
+			player->hspeed = player->isHolding->hspeed;
+			//printf("player %d speed : %f\n", player->id, player->hspeed);
+			//tempPlayer->player->isHolding=tempPlayer->player->isHolding->isHolding;
+			//player->isHolding = NULL;
+		}
+		tempPlayer = tempPlayer->nextPlayer;
+	}*/
 
 	
 
