@@ -14,7 +14,11 @@ void launchGame(){
   *INITIALIZING STUFF
   **/
   Color colors[3] = {setColor(105, 210, 231), setColor(243,134,48), setColor(155, 89, 182) };
-
+//initialiser les sons 
+  Mix_AllocateChannels(9);// allocation de 10 pistes pour les sons 
+   Mix_Chunk *son;
+   son = Mix_LoadWAV("./data/saut.wav");
+  
   //set room attribute
   float gravity = 0.3;
 
@@ -206,6 +210,15 @@ void launchGame(){
             case SDLK_UP:
               if(keyJump == 0){
                 keyJump = 1;
+                    /*if(Mix_PausedMusic() == 1)//Si la musique est en pause
+                    {
+                        Mix_ResumeMusic(); //Reprendre la musique
+                    }
+                    else
+                    {
+                        Mix_PauseMusic(); //Mettre en pause la musique
+                    }*/
+                        Mix_PlayChannel(1, son, 0);
               }
               break;
             case SDLK_TAB :
@@ -250,8 +263,8 @@ void launchGame(){
     }
   }
 
-     
-
+  //Libérations des bruitages  
+  Mix_FreeChunk(son);//Libération du son de saut
   free(thomas);
 
 }

@@ -52,7 +52,8 @@ int main(int argc, char** argv) {
 
   
   Mix_Music *musique;// initialisation du pointeur sur la musique 
-
+ 
+  
   //antialiasing
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,6);
@@ -63,7 +64,7 @@ int main(int argc, char** argv) {
 
   glPointSize(4);
 
-//son
+//Charger les sons 
  if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1) //Initialisation de l'API Mixer
    {
       printf("%s", Mix_GetError());
@@ -83,10 +84,13 @@ if(Mix_PlayingMusic()==1) {
 else {
   printf("la musique ne se joue pas \n");
 }
+
+
+
   launchGame();
 
   SDL_JoystickClose(joystick);
-  
+
   Mix_FreeMusic(musique);
   Mix_CloseAudio(); //Fermeture de l'API
   
