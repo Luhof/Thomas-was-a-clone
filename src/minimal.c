@@ -1,5 +1,6 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_mixer.h>
 
 #ifdef __APPLE__
   #include <OpenGL/gl.h>
@@ -43,11 +44,14 @@ int main(int argc, char** argv) {
     fprintf(stderr, "Impossible d'initialiser la SDL. Fin du programme.\n");
     return EXIT_FAILURE;
   }
-  
+  SDL_AudioInit("dsound");
   SDL_Joystick *joystick; // attention, c'est bien un pointeur !
   joystick = SDL_JoystickOpen(0);
 
   SDL_JoystickEventState(SDL_ENABLE);
+
+  
+  Mix_Music *musique;// initialisation du pointeur sur la musique 
 
   //antialiasing
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
@@ -66,13 +70,17 @@ int main(int argc, char** argv) {
    }
 
 
+  musique = Mix_LoadMUS("../data/musik.wav"); // on charge la zikmu yo !
+  Mix_PlayMusic(musique, -1);// on joue la musique à l'infini 
+
+
   launchGame();
 
   SDL_JoystickClose(joystick);
   
+  Mix_FreeMusic(musique);
   Mix_CloseAudio(); //Fermeture de l'API
   
   SDL_Quit();
-
   return EXIT_SUCCESS;
 }

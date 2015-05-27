@@ -110,7 +110,7 @@ void launchGame(){
       pouity->isHolding = NULL;
       pouitye->isHolding = NULL;
 
-      printf("speeds\n%f\n%f\n%f\n***\n", thomas->hspeed, marcel->hspeed, pouity->hspeed);
+      //printf("speeds\n%f\n%f\n%f\n***\n", thomas->hspeed, marcel->hspeed, pouity->hspeed);
 
       
       updatePlayerPos(thomas);
