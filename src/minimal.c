@@ -59,10 +59,19 @@ int main(int argc, char** argv) {
 
   glPointSize(4);
 
+//son
+ if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1) //Initialisation de l'API Mixer
+   {
+      printf("%s", Mix_GetError());
+   }
+
+
   launchGame();
 
   SDL_JoystickClose(joystick);
-
+  
+  Mix_CloseAudio(); //Fermeture de l'API
+  
   SDL_Quit();
 
   return EXIT_SUCCESS;

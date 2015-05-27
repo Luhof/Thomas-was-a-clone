@@ -9,7 +9,7 @@
 ## #
 
 APP_BIN = thomas_Was_Alone
-LIBS = -lm -L/usr/X11R6/lib -lSDL -lSDLmain -lSDL_image
+LIBS = -lm -L/usr/X11R6/lib -lSDL -lSDLmain -lSDL_image -lSDL_mixer
 CC = gcc
 CFLAGS = -Wall
 INCLUDES = -I/usr/X11R6/include -framework Cocoa -framework OpenGL
