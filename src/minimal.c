@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
     fprintf(stderr, "Impossible d'initialiser la SDL. Fin du programme.\n");
     return EXIT_FAILURE;
   }
-  SDL_AudioInit("dsound");
+
   SDL_Joystick *joystick; // attention, c'est bien un pointeur !
   joystick = SDL_JoystickOpen(0);
 
@@ -70,10 +70,19 @@ int main(int argc, char** argv) {
    }
 
 
-  musique = Mix_LoadMUS("../data/musik.wav"); // on charge la zikmu yo !
+  musique = Mix_LoadMUS("./data/musik.wav"); // on charge la zikmu yo !
+  if(musique==NULL) {
+    printf("ça ne charge pas la musique  \n");
+  }
   Mix_PlayMusic(musique, -1);// on joue la musique à l'infini 
 
+if(Mix_PlayingMusic()==1) {
 
+  printf("ça joue de la musique !!! \n");
+}
+else {
+  printf("la musique ne se joue pas \n");
+}
   launchGame();
 
   SDL_JoystickClose(joystick);
