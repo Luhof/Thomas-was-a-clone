@@ -124,8 +124,8 @@ void isColliding(Players * playersList,  Walls * wallsList, int keyJump){
 			
 			Player * tempParent = player->isHolding;
 				while(tempParent->isHolding!=NULL && tempParent->isCurrentPlayer!=1){
-					//playerPlayerCollisions(player->isHolding, playersList, wallsList, keyJump);
-					//playerWallCollisions(player->isHolding, wallsList, keyJump);
+					playerPlayerCollisions(player->isHolding, playersList, wallsList, keyJump);
+					playerWallCollisions(player->isHolding, wallsList, keyJump);
 					tempParent->hspeed = tempParent->isHolding->hspeed;
 					tempParent = tempParent->isHolding;
 				}

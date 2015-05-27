@@ -128,14 +128,14 @@ void playerPlayerCollisions(Player * player, Players *playersList, Walls * walls
 				** vertical collision
 				**/
 				if(player->vspeed!=0 &&
-				placeMeeting(coordTopY+player->vspeed, coordRightX+player->hspeed, coordBottomY+player->vspeed-1, coordLeftX+player->hspeed, coordTopY2, coordRightX2, coordBottomY2, coordLeftX2)==1)
+				placeMeeting(coordTopY+player->vspeed, coordRightX+player->hspeed, coordBottomY+player->vspeed-0.5, coordLeftX+player->hspeed, coordTopY2, coordRightX2, coordBottomY2, coordLeftX2)==1)
 				{
 									
 					printf("collides with player\n**\n");	
 					//if player is FALLING, he is on the top of the bottom player (player2)...	
 					if(player->vspeed < 0){
 						verticalDiff = (coordBottomY - coordTopY2);
-							
+						player->posY -= verticalDiff; 
 						//Since the player is on the ground he can jump !!
 						if(player->isCurrentPlayer==1){
 							player->vspeed = (keyJump * player->jumpspeed);
@@ -149,11 +149,14 @@ void playerPlayerCollisions(Player * player, Players *playersList, Walls * walls
 					//else if he is JUMPING
 					else if(player->vspeed > 0){
 						verticalDiff =  -1*(coordBottomY2 - coordTopY);
+						//player->hspeed = 0;
 						player->vspeed = 0;
-						player2->vspeed = player->vspeed;
+						player->hspeed = 0;
+						player2->vspeed = 0;
+						player->posY+=verticalDiff;
 					}
 
-					player->posY -= verticalDiff; 
+					
 								
 				}
 
