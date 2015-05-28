@@ -1,7 +1,7 @@
 #include "physics.h"
 #include <stdio.h>
 
-int placeMeeting(int top1, int right1, int bottom1, int left1, int top2, int right2, int bottom2, int left2){
+int placeMeeting(float top1, float right1, float bottom1, float left1, float top2, float right2, float bottom2, float left2){
 	if(		bottom1 < top2
 		&&	top1 > bottom2
 		&&	right1 > left2
@@ -37,15 +37,18 @@ void playerWallCollisions(Player * player, Walls * wallsList, int keyJump){
 		**	vertical collision
 		**/
 		if(player->vspeed!=0 &&
-			placeMeeting(coordTopY+player->vspeed, coordRightX, coordBottomY+player->vspeed-0.5, coordLeftX, wallTop, wallRight, wallBottom, wallLeft)==1)
+			placeMeeting(coordTopY+player->vspeed, coordRightX, coordBottomY+player->vspeed, coordLeftX, wallTop, wallRight, wallBottom, wallLeft)==1)
 			{
 
 			//if player is FALLING, he is on the floor
 			if(player->vspeed < 0){
 				verticalDiff = (coordBottomY - wallTop);
 				//Since the player is on the ground he can jump !!
-				if(player->isCurrentPlayer==1)
+				if(player->isCurrentPlayer==1){
 					player->vspeed = (keyJump * player->jumpspeed);
+					if(keyJump == 1) Mix_PlayChannel(1, player->son, 0);
+				}
+				
 				else player->vspeed = 0;
 			}
 
@@ -60,8 +63,11 @@ void playerWallCollisions(Player * player, Walls * wallsList, int keyJump){
 		/**
 		**	horizontal collision
 		**/
-		if(placeMeeting(coordTopY+player->vspeed, coordRightX+player->hspeed,coordBottomY+player->vspeed, coordLeftX+player->hspeed, wallTop, wallRight, wallBottom, wallLeft)){
-
+		if(placeMeeting(coordTopY, coordRightX+player->hspeed,coordBottomY, coordLeftX+player->hspeed, wallTop, wallRight, wallBottom, wallLeft)){
+				if(player->isHolding!=NULL && player->isHolding->isCurrentPlayer ==1){
+					player->hspeed = 0;
+					player->vspeed = 0;
+				}	
 			//if player is going RIGHT
 			if(player->hspeed > 0){
 				horizontalDiff = -1*(coordRightX - wallLeft);
@@ -82,8 +88,6 @@ void playerWallCollisions(Player * player, Walls * wallsList, int keyJump){
 
 void playerPlayerCollisions(Player * player, Players *playersList, Walls * wallsList, int keyJump){
 		/* CHECK COLLISION WITH OTHER PLAYERS */
-
-
 		
 		//ok should be done for everyone :(
 		float verticalDiff = 0.0;
@@ -109,10 +113,9 @@ void playerPlayerCollisions(Player * player, Players *playersList, Walls * walls
 				/**
 				**	horizontal collision
 				**/
-				if(placeMeeting(coordTopY+player->vspeed, coordRightX+player->hspeed,coordBottomY, coordLeftX+player->hspeed, coordTopY2+player2->vspeed, coordRightX2+player2->hspeed, coordBottomY2+player2->vspeed, coordLeftX2+player2->hspeed))
+				if(placeMeeting(coordTopY, coordRightX+player->hspeed,coordBottomY, coordLeftX+player->hspeed, coordTopY2, coordRightX2, coordBottomY2, coordLeftX2))
 				{
-					
-
+					printf("collision from side\n");
 					//if player is going RIGHT
 					if(player->hspeed > 0){
 						horizontalDiff = -1*(coordRightX - coordLeftX2);
@@ -128,17 +131,19 @@ void playerPlayerCollisions(Player * player, Players *playersList, Walls * walls
 				** vertical collision
 				**/
 				if(player->vspeed!=0 &&
-				placeMeeting(coordTopY+player->vspeed, coordRightX+player->hspeed, coordBottomY+player->vspeed-0.5, coordLeftX+player->hspeed, coordTopY2, coordRightX2, coordBottomY2, coordLeftX2)==1)
+				placeMeeting(coordTopY+player->vspeed, coordRightX, coordBottomY+player->vspeed, coordLeftX, coordTopY2, coordRightX2, coordBottomY2, coordLeftX2)==1)
 				{
 									
-					//printf("collides with player\n**\n");	
 					//if player is FALLING, he is on the top of the bottom player (player2)...	
 					if(player->vspeed < 0){
+						printf("collision from top\n");
 						verticalDiff = (coordBottomY - coordTopY2);
 						player->posY -= verticalDiff; 
 						//Since the player is on the ground he can jump !!
 						if(player->isCurrentPlayer==1){
 							player->vspeed = (keyJump * player->jumpspeed);
+							if(keyJump == 1) Mix_PlayChannel(1, player->son, 0);
+
 						}
 						else player->vspeed = 0;
 						
@@ -149,11 +154,18 @@ void playerPlayerCollisions(Player * player, Players *playersList, Walls * walls
 					//else if he is JUMPING
 					else if(player->vspeed > 0){
 						verticalDiff =  -1*(coordBottomY2 - coordTopY);
+						printf("collision from bottom\n");
 						//player->hspeed = 0;
 						player->vspeed = 0;
-						player->hspeed = 0;
-						player2->vspeed = 0;
-						player->posY+=verticalDiff;
+						//player->hspeed = 0;
+						if(player2->isHolding!=NULL && player2->isHolding->isCurrentPlayer ==1){
+							player2->hspeed = 0;
+							player2->vspeed = 0;
+							player->hspeed = 0;
+							player->vspeed = 0;
+						}
+						//player2->vspeed = 0;
+						player->posY-=verticalDiff;
 					}
 
 					
@@ -189,11 +201,11 @@ void getParents(Players * playersList){
 		while(tempPlayer2!=NULL){
 				player2 = tempPlayer2->player;
 				if(player2->id != player->id){
-									float coordBottomY2 =	player2->posY - player2->height/2.0;
+				float coordBottomY2 =	player2->posY - player2->height/2.0;
 				float coordTopY2 = 		player2->posY + player2->height/2.0;
 				float coordLeftX2 = 	player2->posX - player2->width/2.0;
 				float coordRightX2 = 	player2->posX  + player2->width/2.0;
-				if(placeMeeting(coordTopY+player->vspeed, coordRightX, coordBottomY+player->vspeed-1, coordLeftX, coordTopY2, coordRightX2, coordBottomY2, coordLeftX2)==1)
+				if(placeMeeting(coordTopY+player->vspeed, coordRightX, coordBottomY+player->vspeed, coordLeftX, coordTopY2, coordRightX2, coordBottomY2, coordLeftX2)==1)
 				{
 										
 					//if player is FALLING, he is on the top of the bottom player (player2)...	
@@ -223,10 +235,6 @@ void getParents(Players * playersList){
 			}
 				tempPlayer = tempPlayer->nextPlayer;
 
-			
-		
-
-
 		
 	}
 
@@ -234,6 +242,31 @@ void getParents(Players * playersList){
 
 }
 
+
+int isPlayerOnEndPos(Player * player){
+
+	float coordBottomY =	player->posY - player->height/2.0;
+	float coordTopY = 		player->posY + player->height/2.0;
+	float coordLeftX = 		player->posX - player->width/2.0;
+	float coordRightX = 	player->posX + player->width/2.0;
+
+	float endCoordBottomY =		player->endPosY - player->height/2.0;
+	float endCoordTopY = 		player->endPosY + player->height/2.0;
+	float endCoordLeftX = 		player->endPosX - player->width/2.0;
+	float endCoordRightX = 		player->endPosX + player->width/2.0;
+	return placeMeeting(coordTopY, coordRightX, coordBottomY, coordLeftX, endCoordTopY, endCoordRightX, endCoordBottomY, endCoordLeftX);
+
+}
+
+int arePlayersOnEndPos(Players * playersList){
+	int result = 1;
+	Players * tempPlayer = playersList->firstPlayer;
+	while(tempPlayer!=NULL){
+		result *= isPlayerOnEndPos(tempPlayer->player);
+		tempPlayer = tempPlayer->nextPlayer;
+	}
+	return result;
+}
 
 
 

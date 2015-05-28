@@ -1,7 +1,7 @@
 
-
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
+#include <SDL/SDL_mixer.h>
 
 #ifdef __APPLE__
   #include <OpenGL/gl.h>
@@ -13,7 +13,7 @@
 
 #include "../colors.h"
 #include "wall.h"
-
+//#include "level.h"
 
 
 typedef struct _player{
@@ -26,10 +26,14 @@ typedef struct _player{
 	float jumpspeed;
 	float hspeed;
 	float vspeed;
+	float startPosX;
+	float startPosY;
 	float posX;
 	float posY;
+	float endPosX;
+	float endPosY;
 	Color color;
-
+	Mix_Chunk *son;
 } Player;
 
 typedef struct _players{
@@ -40,7 +44,7 @@ typedef struct _players{
 
 
 Players* initPlayerList();
-Player * createPlayer(float width, float height, float posX, float posY, float movespeed, float jumpspeed, Color color);
+Player * createPlayer(float width, float height, float startPosX, float startPosY, float endPosX, float endPosY, float movespeed, float jumpspeed, Color color, char* son);
 
 void addPlayer(Players *playersList, Player *player);
 void switchCharacter(Players * playersList);
@@ -49,6 +53,8 @@ void setVSpeed(Players * playersList, float gravity);
 
 void isColliding(Players * playersList, Walls * wallsList, int keyJump);
 
+void updatePlayersPos(Players * playersList);
 void updatePlayerPos(Player * thomas);
+
 
 #endif

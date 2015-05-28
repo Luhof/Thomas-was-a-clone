@@ -1,7 +1,7 @@
 #include "game.h"
-#include "draw.h"
 #include "time.h"
 #include "math.h"
+
 
 void launchGame(){
   
@@ -13,55 +13,25 @@ void launchGame(){
   /** 
   *INITIALIZING STUFF
   **/
-  Color colors[3] = {setColor(105, 210, 231), setColor(243,134,48), setColor(155, 89, 182) };
+  
 //initialiser les sons 
   Mix_AllocateChannels(9);// allocation de 10 pistes pour les sons 
-   Mix_Chunk *son;
-   son = Mix_LoadWAV("./data/saut.wav");
+  //Mix_Chunk *son;
+  //son = Mix_LoadWAV("./data/saut.wav");
   
   //set room attribute
   float gravity = 0.3;
-
-  //set player attributes
-  Players *playersList = initPlayerList();
-  
-  Player *thomas = createPlayer(25.0, 50.0, -45.0, 100.0, 4.0, 10.0, colors[0]);
-  Player *marcel = createPlayer(70.0, 70.0, -30, 40.0, 4.0, 15.0, colors[1]);
-  Player *pouity = createPlayer(15.0, 80.0, -100, 40.0, 4.0, 10.0, colors[2]);
-  Player *pouitye = createPlayer(15.0, 80.0, 250.0, -40.0, 4.0, 10.0, colors[0]);
-  thomas->isCurrentPlayer = 1;
-
-
-  addPlayer(playersList, pouity);
-  addPlayer(playersList, pouitye);
-  addPlayer(playersList, marcel);
-  addPlayer(playersList, thomas);
-
-
-  printf("marcel is player %d\n", marcel->id);
-  printf("thomas is player %d\n", thomas->id);
-  printf("pouity2 is player %d\n", pouitye->id);
-
-  printf("player initialized\n");
-
-
-  Walls* wallsList = initWallList();
-  Wall * wall1 = createWall(300.0, 75.0, -250.0, -100.0);
-  Wall * wall2 = createWall(250.0, 75.0, 200.0, 100.0);
-  Wall * wall3 = createWall(300.0, 75.0, 100.0, -100.0);
-  addWall(wallsList, wall3);
-  addWall(wallsList, wall2);
-  addWall(wallsList, wall1);
-
-  printf("wall initialized\n");
 
   int keyJump = 0;
   int keyLeft = 0;
   int keyRight = 0;
   int keySwitch = 0;
 
-  /*float angle = 0;
-  float screenRotateSpeed = 0.1;*/
+  Level * firstLevel = initLevel();
+  Players * playersList = firstLevel->playersList;
+  Walls * wallsList = firstLevel->wallsList;
+
+     
   /**
   *STARTING LOOP
   **/
@@ -74,28 +44,25 @@ void launchGame(){
 
     /* temps au début de la boucle */
     Uint32 startTime = SDL_GetTicks();
-    
-
 
     /* dessin */
     glClear(GL_COLOR_BUFFER_BIT);
 
-
-
     glMatrixMode(GL_MODELVIEW);
- 
+   
     
     glLoadIdentity();
-
+    
     if(keySwitch) switchCharacter(playersList);
     drawThumbnails(playersList);
 
-     //ça c'est juste pour la frime
-/*    if(angle > 10 || angle < -10){
-      screenRotateSpeed *= -1;
-    }
-    angle += screenRotateSpeed;
-    glRotatef(angle, 0, 0, 1);*/
+
+    //glTranslatef(firstLevel->cameraX, firstLevel->cameraY, 1);
+
+
+
+
+
 
 
       //set speed depending on gravity and player input
@@ -109,20 +76,26 @@ void launchGame(){
       //use of pseudo-physics to check collisions and jumps
       isColliding(playersList, wallsList, keyJump);
 
-      thomas->isHolding = NULL;
-      marcel->isHolding = NULL;
-      pouity->isHolding = NULL;
-      pouitye->isHolding = NULL;
+      
 
       //printf("speeds\n%f\n%f\n%f\n***\n", thomas->hspeed, marcel->hspeed, pouity->hspeed);
 
-      
-      updatePlayerPos(thomas);
-      updatePlayerPos(marcel);
-      updatePlayerPos(pouity);
-      updatePlayerPos(pouitye);
+      updatePlayersPos(playersList);
 
+
+      
+
+      if(arePlayersOnEndPos(playersList)) printf("you win :D\n");
+
+      updateCamera(firstLevel);
+      stepCamera(firstLevel);
+
+      if(isAnyPlayerDead(playersList, firstLevel)==1) resetLevel(firstLevel);
+      glTranslatef(firstLevel->cameraX, firstLevel->cameraY, 1);
+
+      drawPlayersEndPos(playersList);
       drawPlayers(playersList);
+
 
       glColor3ub(230,223,215);
       drawWalls(wallsList);
@@ -197,7 +170,9 @@ void launchGame(){
             case SDLK_ESCAPE :
               loop = 0;
               break;
-
+            case 'r' :
+              resetLevel(firstLevel);
+              break;
             case SDLK_RIGHT :
               keyRight = 1;
               break;
@@ -210,15 +185,6 @@ void launchGame(){
             case SDLK_UP:
               if(keyJump == 0){
                 keyJump = 1;
-                    /*if(Mix_PausedMusic() == 1)//Si la musique est en pause
-                    {
-                        Mix_ResumeMusic(); //Reprendre la musique
-                    }
-                    else
-                    {
-                        Mix_PauseMusic(); //Mettre en pause la musique
-                    }*/
-                        Mix_PlayChannel(1, son, 0);
               }
               break;
             case SDLK_TAB :
@@ -264,8 +230,7 @@ void launchGame(){
   }
 
   //Libérations des bruitages  
-  Mix_FreeChunk(son);//Libération du son de saut
-  free(thomas);
+  Mix_FreeChunk(firstLevel->playersList->firstPlayer->player->son);//Libération du son de saut
 
 }
 

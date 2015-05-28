@@ -1,5 +1,6 @@
 
 #include "draw.h"
+#include "physics.h"
 
 void drawThumbnails(Players * playersList){
 	float ratio = 1200.0/600.0;
@@ -43,6 +44,14 @@ void drawPlayers(Players * playersList){
 	}
 }
 
+void drawPlayersEndPos(Players * playersList){
+	Players * tempPlayer = playersList->firstPlayer;
+	while(tempPlayer!=NULL){
+		drawPlayerEndPos(tempPlayer->player);
+		tempPlayer = tempPlayer->nextPlayer;
+	}
+}
+
 
 
 void drawWalls(Walls * wallsList){
@@ -69,6 +78,24 @@ void drawPlayer(Player * thomas){
 		glEnd();
 		glPopMatrix();
 
+}
+
+void drawPlayerEndPos(Player * thomas){
+		float width = thomas->width;
+		float height = thomas->height;
+
+		glPushMatrix();
+		glColor3ub(255,255,255);
+		glTranslatef(thomas->endPosX, thomas->endPosY, 0);
+		if(isPlayerOnEndPos(thomas))
+			glBegin(GL_QUADS);
+		else glBegin(GL_LINE_LOOP);
+		glVertex2f(-(width/2.0), -(height/2.0));
+		glVertex2f((width/2.0), -(height/2.0));
+		glVertex2f((width/2.0), (height/2.0));
+		glVertex2f(-(width/2.0), (height/2.0));
+		glEnd();
+		glPopMatrix();
 }
 
 

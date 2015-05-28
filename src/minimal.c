@@ -77,15 +77,6 @@ int main(int argc, char** argv) {
   }
   Mix_PlayMusic(musique, -1);// on joue la musique à l'infini 
 
-if(Mix_PlayingMusic()==1) {
-
-  printf("ça joue de la musique !!! \n");
-}
-else {
-  printf("la musique ne se joue pas \n");
-}
-
-
 
   launchGame();
 
@@ -97,3 +88,5 @@ else {
   SDL_Quit();
   return EXIT_SUCCESS;
 }
+
+
