@@ -75,6 +75,7 @@ void launchGame(){
 
       //use of pseudo-physics to check collisions and jumps
       isColliding(playersList, wallsList, keyJump);
+      //isColliding(playersList, wallsList, keyJump);
 
       
 
@@ -88,11 +89,12 @@ void launchGame(){
       if(arePlayersOnEndPos(playersList)) printf("you win :D\n");
 
       updateCamera(firstLevel);
-      stepCamera(firstLevel);
+      //stepCamera(firstLevel);
 
       if(isAnyPlayerDead(playersList, firstLevel)==1) resetLevel(firstLevel);
+      printf("ready to translate\n");
       glTranslatef(firstLevel->cameraX, firstLevel->cameraY, 1);
-
+      printf("cool tranks\n");
       drawPlayersEndPos(playersList);
       drawPlayers(playersList);
 
@@ -102,6 +104,7 @@ void launchGame(){
 
       keyJump = 0;
       keySwitch = 0;
+      printf("we swapper buffers K THX\n");
 
     SDL_GL_SwapBuffers();
 

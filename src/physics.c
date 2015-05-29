@@ -115,7 +115,7 @@ void playerPlayerCollisions(Player * player, Players *playersList, Walls * walls
 				**/
 				if(placeMeeting(coordTopY, coordRightX+player->hspeed,coordBottomY, coordLeftX+player->hspeed, coordTopY2, coordRightX2, coordBottomY2, coordLeftX2))
 				{
-					printf("collision from side\n");
+					//printf("collision from side\n");
 					//if player is going RIGHT
 					if(player->hspeed > 0){
 						horizontalDiff = -1*(coordRightX - coordLeftX2);
@@ -136,7 +136,7 @@ void playerPlayerCollisions(Player * player, Players *playersList, Walls * walls
 									
 					//if player is FALLING, he is on the top of the bottom player (player2)...	
 					if(player->vspeed < 0){
-						printf("collision from top\n");
+						//printf("collision from top\n");
 						verticalDiff = (coordBottomY - coordTopY2);
 						player->posY -= verticalDiff; 
 						//Since the player is on the ground he can jump !!
@@ -154,7 +154,7 @@ void playerPlayerCollisions(Player * player, Players *playersList, Walls * walls
 					//else if he is JUMPING
 					else if(player->vspeed > 0){
 						verticalDiff =  -1*(coordBottomY2 - coordTopY);
-						printf("collision from bottom\n");
+						//printf("collision from bottom\n");
 						//player->hspeed = 0;
 						player->vspeed = 0;
 						//player->hspeed = 0;
@@ -210,7 +210,7 @@ void getParents(Players * playersList){
 										
 					//if player is FALLING, he is on the top of the bottom player (player2)...	
 					if(player->vspeed < 0){
-
+						//printf("player %d is holding %d\n", player->id, player2->id);
 						player->isHolding = player2;
 						//printf("player %d parent : %d\n", player->id, player->isHolding->id);
 					}
@@ -218,6 +218,7 @@ void getParents(Players * playersList){
 					//else if he is JUMPING
 					else if(player->vspeed > 0){
 						player2->isHolding = player;
+						//printf("player %d is holding %d\n", player2->id, player->id);
 						//printf("player %d parent : %d\n", player2->id, player->id);
 					}
 

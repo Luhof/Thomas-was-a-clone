@@ -137,6 +137,7 @@ void isColliding(Players * playersList,  Walls * wallsList, int keyJump){
 			
 			Player * tempParent = player->isHolding;
 				while(tempParent->isHolding!=NULL && tempParent->isCurrentPlayer!=1){
+					//printf("there is a holder :o\n");
 					
 					playerWallCollisions(player->isHolding, wallsList, keyJump);
 					playerPlayerCollisions(player->isHolding, playersList, wallsList, keyJump);
@@ -159,11 +160,15 @@ void isColliding(Players * playersList,  Walls * wallsList, int keyJump){
 		tempPlayer = tempPlayer->nextPlayer;
 	}
 
+
+	//empty list
 	tempPlayer = playersList->firstPlayer;
 	while(tempPlayer!=NULL){
 		tempPlayer->player->isHolding = NULL;
 		tempPlayer = tempPlayer->nextPlayer;
 	}
+
+	
 
 	/*tempPlayer = playersList->firstPlayer;
 	while(tempPlayer!=NULL){
