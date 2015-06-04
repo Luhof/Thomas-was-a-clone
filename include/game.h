@@ -18,8 +18,10 @@
 
 #include "objects/wall.h"
 #include "objects/player.h"
+#include "textures.h"
 #include "level.h"
 
 
 
 void launchGame();
+void launchMenu();

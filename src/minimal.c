@@ -50,9 +50,7 @@ int main(int argc, char** argv) {
 
   SDL_JoystickEventState(SDL_ENABLE);
 
-  
-  Mix_Music *musique;// initialisation du pointeur sur la musique 
- 
+
   
   //antialiasing
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
@@ -71,18 +69,11 @@ int main(int argc, char** argv) {
    }
 
 
-  musique = Mix_LoadMUS("./data/musik.wav"); // on charge la zikmu yo !
-  if(musique==NULL) {
-    printf("ça ne charge pas la musique  \n");
-  }
-  Mix_PlayMusic(musique, -1);// on joue la musique à l'infini 
 
-
-  launchGame();
+  launchMenu();
 
   SDL_JoystickClose(joystick);
-
-  Mix_FreeMusic(musique);
+  //Mix_FreeMusic(musique);
   Mix_CloseAudio(); //Fermeture de l'API
   
   SDL_Quit();

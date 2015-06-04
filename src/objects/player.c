@@ -23,7 +23,7 @@ Players* initPlayerList(){
     return playersList;
 }
 
-Player * createPlayer(float width, float height, float startPosX, float startPosY, float endPosX, float endPosY, float movespeed, float jumpspeed, Color color, char* son){
+Player * createPlayer(float width, float height, float startPosX, float startPosY, float endPosX, float endPosY, float movespeed, float jumpspeed, Color color){
 	Player * newPlayer = calloc(1, sizeof(Player));
 	if(newPlayer==NULL) exit(1);
 	newPlayer->isCurrentPlayer = 0;
@@ -41,7 +41,7 @@ Player * createPlayer(float width, float height, float startPosX, float startPos
 	newPlayer->hspeed = 0.0;
 	newPlayer->vspeed = 0.0;
 	newPlayer->isHolding = NULL;
-	newPlayer->son = Mix_LoadWAV(son);
+	newPlayer->son = Mix_LoadWAV("./data/saut.wav");
 
 	return newPlayer;
 

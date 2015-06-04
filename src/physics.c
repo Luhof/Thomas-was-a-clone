@@ -70,14 +70,14 @@ void playerWallCollisions(Player * player, Walls * wallsList, int keyJump){
 				}	
 			//if player is going RIGHT
 			if(player->hspeed > 0){
-				horizontalDiff = -1*(coordRightX - wallLeft);
+				horizontalDiff = (coordRightX - wallLeft);
 			}
 			//else if player is going LEFT
 			else if(player->hspeed < 0){
-				horizontalDiff = wallRight - coordLeftX;
+				horizontalDiff = -1*(wallRight - coordLeftX);
 			}
-
-			player->hspeed = horizontalDiff;
+			player->hspeed = 0;
+			player->posX -= horizontalDiff;
 		}		
 		
 		tempWall = tempWall->nextWall;
@@ -110,22 +110,7 @@ void playerPlayerCollisions(Player * player, Players *playersList, Walls * walls
 				float coordTopY2 = 		player2->posY + player2->height/2.0;
 				float coordLeftX2 = 	player2->posX - player2->width/2.0;
 				float coordRightX2 = 	player2->posX  + player2->width/2.0;
-				/**
-				**	horizontal collision
-				**/
-				if(placeMeeting(coordTopY, coordRightX+player->hspeed,coordBottomY, coordLeftX+player->hspeed, coordTopY2, coordRightX2, coordBottomY2, coordLeftX2))
-				{
-					//printf("collision from side\n");
-					//if player is going RIGHT
-					if(player->hspeed > 0){
-						horizontalDiff = -1*(coordRightX - coordLeftX2);
-					}
-					//else if player is going LEFT
-					else if(player->hspeed < 0){
-						horizontalDiff = coordRightX2 - coordLeftX;
-					}
-					player->hspeed = horizontalDiff;
-				}
+
 
 				/**
 				** vertical collision
@@ -159,17 +144,36 @@ void playerPlayerCollisions(Player * player, Players *playersList, Walls * walls
 						player->vspeed = 0;
 						//player->hspeed = 0;
 						if(player2->isHolding!=NULL && player2->isHolding->isCurrentPlayer ==1){
-							player2->hspeed = 0;
+							//player2->hspeed = 0;
 							player2->vspeed = 0;
-							player->hspeed = 0;
+							//player->hspeed = 0;
 							player->vspeed = 0;
+
 						}
 						//player2->vspeed = 0;
 						player->posY-=verticalDiff;
 					}
+					//else player->vspeed = 0;
 
 					
 								
+				}
+
+				/**
+				**	horizontal collision
+				**/
+				if(placeMeeting(coordTopY, coordRightX+player->hspeed,coordBottomY, coordLeftX+player->hspeed, coordTopY2, coordRightX2, coordBottomY2, coordLeftX2))
+				{
+					//printf("collision from side\n");
+					//if player is going RIGHT
+					if(player->hspeed > 0){
+						horizontalDiff = (coordRightX - coordLeftX2);
+					}
+					//else if player is going LEFT
+					else if(player->hspeed < 0){
+						horizontalDiff = -1*(coordRightX2 - coordLeftX);
+					}
+					player->hspeed = horizontalDiff; 
 				}
 
 

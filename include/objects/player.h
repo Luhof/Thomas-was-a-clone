@@ -44,7 +44,7 @@ typedef struct _players{
 
 
 Players* initPlayerList();
-Player * createPlayer(float width, float height, float startPosX, float startPosY, float endPosX, float endPosY, float movespeed, float jumpspeed, Color color, char* son);
+Player * createPlayer(float width, float height, float startPosX, float startPosY, float endPosX, float endPosY, float movespeed, float jumpspeed, Color color);
 
 void addPlayer(Players *playersList, Player *player);
 Player * switchCharacter(Players * playersList);

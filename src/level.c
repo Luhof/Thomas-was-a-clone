@@ -1,44 +1,213 @@
+#define LINE_BUFFER_SIZE 2000
 #include "level.h"
+#include <unistd.h>
 
 Level * initLevel(){
 
-	Color colors[3] = {setColor(105, 210, 231), setColor(243,134,48), setColor(155, 89, 182) };
-
 	Level * level = calloc(1, sizeof(Level));
-	level->id = 1;
+	level->id = 0;
 
-	level->width = 2000.0;
-	level->height = 2000.0;
+	level->width = 0;
+	level->height = 0;
 
+	level->cameraX = 0;
+	level->cameraY = 0;
 
-	Walls* wallsList = initWallList();
-	Wall * wall1 = createWall(300.0, 75.0, -250.0, 0.0);
-	Wall * wall2 = createWall(25.0, 250.0, 200.0, 0.0);
-	Wall * wall3 = createWall(300.0, 75.0, 100.0, -100.0);
-	addWall(wallsList, wall3);
-	addWall(wallsList, wall2);
-	addWall(wallsList, wall1);
-
-	//set player attributes
-	Players *playersList = initPlayerList();
-	Player *thomas = createPlayer(35.0, 80.0, -50, 200.0, -100, -37.50, 4.0, 10.0, colors[0], "./data/saut.wav");
-	Player *marcel = createPlayer(70.0, 70.0, -30.0, 100.0, 200, 172.50, 4.0, 15.0, colors[1], "./data/saut.wav");
-	Player *pouity = createPlayer(60.0, 25.0, -180.0, 140.0, 70, 177.50, 4.0, 10.0, colors[2], "./data/saut.wav");
-	thomas->isCurrentPlayer = 1;
-	addPlayer(playersList, pouity);
-	addPlayer(playersList, marcel);
-	addPlayer(playersList, thomas);
-
-	level->wallsList = wallsList;
-	level->playersList = playersList;
-
-	level->cameraX = thomas->posX;
-	level->cameraY = thomas->posY - 100.0;
-
-	//level->cameraDestX = thomas->startPosX;
 
 	return level;
 }
+
+void fillLevel(Level * level, int idLevel){
+
+
+}
+
+void switchLevel(Level * level){
+	int nextId = level->id +1;
+	emptyLevel(level);
+	fillLevelFromFile(level, nextId);
+}
+
+void fillLevelFromFile(Level * level, int nbStr){
+	
+	Walls* wallsList = initWallList();
+	Players *playersList = initPlayerList();
+	Textures * textureList = initTexturesList();
+	level->wallsList = wallsList;
+	level->playersList = playersList;
+	level->textureList = textureList;
+	//temp
+	level->id = nbStr;
+	level->width = 2000.0;
+	level->height = 2000.0;
+
+	//get file name
+	char buf[12];
+	sprintf(buf, "%d", nbStr);
+
+
+	char * levelStr = "./data/levels/level";
+	char * extStr = ".txt";
+	char * result = malloc(strlen(levelStr)+nbStr+strlen(extStr)+1);//+1 for the zero-terminator
+   	if(result==NULL) exit(1);
+
+    strcpy(result, levelStr);
+    strcat(result, buf);
+    strcat(result, extStr);
+
+    //load file and data
+    FILE * f;
+    int currLine = 0;
+    int charCount = 0;
+    char firstchar;
+  	char buffer[LINE_BUFFER_SIZE];
+  	char buffercomments[LINE_BUFFER_SIZE];
+  	int scanfres;
+
+  	Wall * tempWall;
+  	float wallWidth, wallHeight, wallX, wallY;
+  	//char myString[1000];
+  	Player * tempPlayer;
+  	float playerWidth, playerHeight, playerStartPosX, playerStartPosY, playerEndPosX, playerEndPosY, playerSpeed, playerJump;
+  	int pr, pg, pb, isCurr;
+  	Color tempColor;
+
+  	float lvlWidth, lvlHeight;
+  	char musicFile[100];
+  	char background[100];
+
+  	char textureFile[100];
+  	float textureX, textureY;
+  	Texture * tempTexture;
+
+  	
+
+  	f = fopen(result, "r");
+ 	if(f == NULL)
+  	{
+    	printf("Error loading file %s\n", result);
+    	exit(1);
+  	}
+  	else
+  		printf("opened file %s\n", result);
+
+
+  	/* Cross all lines of the file */
+  	do{
+
+    fgets(buffer, LINE_BUFFER_SIZE, f);
+    ++currLine;
+    /* Check for empty line */
+    scanfres = sscanf(buffer, "%s", buffercomments);
+    if (scanfres != 1) continue;
+
+    /* Check for comments */
+    scanfres = sscanf(buffer, " %c", &firstchar);
+    if (scanfres == 1 && firstchar == '#') continue;
+
+    /* Check for level data */
+    scanfres = sscanf(buffer, "%c %f %f %s %s%n", &firstchar, &lvlWidth, &lvlHeight, musicFile, background, &charCount);
+    if (scanfres == 5 && firstchar == 'S')
+    {	
+    	
+    	level->music = Mix_LoadMUS(musicFile); // on charge la zikmu yo !
+  		if(level->music==NULL) {
+    		printf("ça ne charge pas la musique  \n");
+ 		 }
+ 		Mix_PlayMusic(level->music, -1);// on joue la musique à l'infini 
+    	//printf("texture name : %s \n", background);
+    	level->background = initTexture(background);
+    	level->width = lvlWidth;
+    	level->height = lvlHeight;
+      continue;
+    }
+
+    /* Check for walls setting lines */
+    scanfres = sscanf(buffer, " %c %f %f %f %f %n", &firstchar, &wallWidth, &wallHeight, &wallX, &wallY, &charCount);
+    if (scanfres == 5 && firstchar == 'W')
+    {
+
+      tempWall = createWall(wallWidth, wallHeight, wallX, wallY);
+      printf("created wall %f/%f/%f/%f\n", wallWidth, wallHeight, wallX, wallY);
+      addWall(level->wallsList, tempWall);
+      continue;
+    }
+
+    /*if (scanfres != 5)
+    {
+    
+      fprintf(stderr, "Error reading line %d : %s", currLine, buffer);
+      continue;
+    }*/
+
+    /* Check for charecter setting lines */
+    scanfres = sscanf(buffer, "%c %f %f %f %f %f %f %f %f %d %d %d %d %n", &firstchar, &playerWidth, &playerHeight, &playerStartPosX, &playerStartPosY, &playerEndPosX, &playerEndPosY, &playerSpeed, &playerJump, &pr, &pg, &pb, &isCurr, &charCount);
+    if (scanfres == 13 && firstchar == 'P')
+    {
+    	tempColor = setColor(pr, pg, pb);
+
+    	tempPlayer = createPlayer(playerWidth, playerHeight, playerStartPosX, playerStartPosY, playerEndPosX, playerEndPosY, playerSpeed, playerJump, tempColor);
+    	if(isCurr == 1) tempPlayer->isCurrentPlayer = 1;
+    	addPlayer(level->playersList, tempPlayer);
+    	printf("created player %f/%f/%f/%f\n", playerWidth, playerHeight, playerStartPosY, playerStartPosX);
+      continue;
+    }
+
+    /* Check for textures */
+    scanfres = sscanf(buffer, " %c %f %f %s %n", &firstchar, &textureX, &textureY, textureFile, &charCount);
+    if (scanfres == 4 && firstchar == 'T')
+    {	
+    	//tempTexture = initTexturesList();
+    	tempTexture = initTexture(textureFile);
+    	tempTexture->textureX = textureX;
+    	tempTexture->textureY = textureY;
+
+    	addTexture(level->textureList, tempTexture);
+    	//level->textureList = tempTexture->firstTexture;
+    
+    	//printf("tempTexture->textureX : %f\n", level->textureList->firstTexture->myTexture->textureX);
+    	
+      continue;
+    }
+
+
+
+
+
+  } while (!feof(f));
+
+   /* closing file*/
+  if(fclose(f) == EOF) {
+    printf("Closing error with %s", result);
+   	exit(1);
+  }
+
+
+}
+
+void emptyLevel(Level * level){
+
+	Walls * tempWalls = NULL;
+	while(level->wallsList!=NULL){
+		tempWalls = level->wallsList->nextWall;
+		free(level->wallsList->wall);
+		free(level->wallsList);
+		level->wallsList = tempWalls;
+	}
+
+	Players * tempPlayers = NULL;
+	while(level->playersList!=NULL){
+		tempPlayers = level->playersList->nextPlayer;
+		free(level->playersList->player);
+		free(level->playersList);
+		level->playersList = tempPlayers;
+	}
+
+	level->background = NULL;
+	Mix_PauseMusic();
+	//Mix_FreeMusic(level->music);
+
+} 
 
 
 int isAnyPlayerDead(Players * playersList, Level * currentLevel){
@@ -67,9 +236,9 @@ void resetLevel(Level * level){
 		tempPlayer->player->posY = tempPlayer->player->startPosY;
 		if(tempPlayer->player->isCurrentPlayer==1){
 			
-			level->cameraDestX = tempPlayer->player->startPosX;
-			level->cameraDestY = tempPlayer->player->startPosY;
-			level->isCameraMoving = 1;
+			level->cameraX = tempPlayer->player->startPosX;
+			level->cameraY = tempPlayer->player->startPosY;
+			//level->isCameraMoving = 1;
 			
 			break;
 		}
@@ -131,7 +300,7 @@ void stepCamera(Level* level){
 	int yDone = 0;
 
 	if(level->isCameraMoving==1){
-		printf("camera is moving x : %f et y %f\n to x : %f et y : %f\n", level->cameraX, level->cameraY, level->cameraDestX, level->cameraDestY);
+		//printf("camera is moving x : %f et y %f\n to x : %f et y : %f\n", level->cameraX, level->cameraY, level->cameraDestX, level->cameraDestY);
 		if(level->cameraX < level->cameraDestX){
 			
 				level->cameraX += 10.0;
@@ -183,3 +352,4 @@ void stepCamera(Level* level){
 	
 
 }
+

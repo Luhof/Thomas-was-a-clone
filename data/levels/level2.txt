@@ -1,0 +1,4 @@
+S 2000.0 2000.0 ./data/music/song2.wav ./data/textures/backgrounds/background2.jpg
+
+W 300.0 75.0 -250.0 0.0
+P 35.0 80.0 -150.0 200.0 -250 77.50 4.0 10.0 105 210 231 1

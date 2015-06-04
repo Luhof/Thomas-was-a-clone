@@ -1,4 +1,6 @@
 #include "game.h"
+
+#include "draw.h"
 #include "time.h"
 #include "math.h"
 
@@ -14,12 +16,12 @@ void launchGame(){
   *INITIALIZING STUFF
   **/
   
-//initialiser les sons 
+  //initialiser les sons 
   Mix_AllocateChannels(9);// allocation de 10 pistes pour les sons 
   //Mix_Chunk *son;
   //son = Mix_LoadWAV("./data/saut.wav");
   
-  //set room attribute
+  //set basic attributes
   float gravity = 0.3;
 
   int keyJump = 0;
@@ -27,20 +29,22 @@ void launchGame(){
   int keyRight = 0;
   int keySwitch = 0;
 
-  Level * firstLevel = initLevel();
-  Players * playersList = firstLevel->playersList;
-  Walls * wallsList = firstLevel->wallsList;
+  Level * currLevel = initLevel();
+  //fillLevel(currLevel, 1);
+  fillLevelFromFile(currLevel, 1);
 
-     
+  /*printf("about to init texture\n");
+  Texture * myTexture = initTexture("./src/background.jpg");
+  printf("initialized texture \n");*/
+  
   /**
   *STARTING LOOP
   **/
 
   int loop = 1;
-  printf("started loop\n");
   while(loop){
 
-    
+     
 
     /* temps au début de la boucle */
     Uint32 startTime = SDL_GetTicks();
@@ -51,66 +55,83 @@ void launchGame(){
     glMatrixMode(GL_MODELVIEW);
    
     
-    glLoadIdentity();
+    
     
     if(keySwitch){
-      Player * newCharacter = switchCharacter(playersList);
-      firstLevel->cameraX = newCharacter->posX;
-      firstLevel->cameraY = newCharacter->posY;
-      printf("new character X : %f - %f\n", newCharacter->posX, newCharacter->posY);
-      //firstLevel->isCameraMoving = 1;
+      Player * newCharacter = switchCharacter(currLevel->playersList);
+      currLevel->cameraX = newCharacter->posX;
+      currLevel->cameraY = newCharacter->posY;
     }
-    
-
-
-
 
       //set speed depending on gravity and player input
-      setVSpeed(playersList, gravity);
-      
-      setHSpeed(playersList, keyLeft + keyRight);
-
-      //need to add update flags or smth like that.
-      //SKETCH SHIET
+      setVSpeed(currLevel->playersList, gravity);
+      setHSpeed(currLevel->playersList, keyLeft + keyRight);
 
       //use of pseudo-physics to check collisions and jumps
-      isColliding(playersList, wallsList, keyJump);
-      //isColliding(playersList, wallsList, keyJump);
+      isColliding(currLevel->playersList, currLevel->wallsList, keyJump);
+
+
+      updatePlayersPos(currLevel->playersList);
 
       
 
-      //printf("speeds\n%f\n%f\n%f\n***\n", thomas->hspeed, marcel->hspeed, pouity->hspeed);
-
-      updatePlayersPos(playersList);
 
 
+
+      if(currLevel->isCameraMoving==0)
+        updateCamera(currLevel);
+
+      if(isAnyPlayerDead(currLevel->playersList, currLevel)==1){
+        resetLevel(currLevel);
+      }
+
+     
       
 
-      if(arePlayersOnEndPos(playersList)) printf("you win :D\n");
-
-      if(firstLevel->isCameraMoving==0)
-        updateCamera(firstLevel);
-      if(firstLevel->isCameraMoving == 1)
-        stepCamera(firstLevel);
-
-      if(isAnyPlayerDead(playersList, firstLevel)==1) resetLevel(firstLevel);
-      
+      /* DRAW */
+      glLoadIdentity();
+     
       glPushMatrix();
+        glEnable(GL_TEXTURE_2D);
+        glColor3ub(255,255,255);
+        drawSquareTex(currLevel->cameraX/5.0,currLevel->cameraY/5.0, currLevel->background);
+        glColor3ub(255,255,255);
+        //glColor3ub(255,255,255);
+        
+        //glColor3ub(255,255,255);
+        glDisable(GL_TEXTURE_2D);
 
-      glTranslatef(firstLevel->cameraX, firstLevel->cameraY, 1);
+
+
+
+      glRotatef(1.5, 0.0,0.0,1.0);
+      glTranslatef(currLevel->cameraX, currLevel->cameraY, 0);
+        glEnable(GL_TEXTURE_2D);
+        drawTextures(currLevel->textureList);
+        glDisable(GL_TEXTURE_2D);
+
+
+      glColor3ub(0.0,0.0,0.0);
+      drawWalls(currLevel->wallsList);
+        //printf("pos Y : %f\n", playersList->firstPlayer->player->posY);
       
-      drawPlayersEndPos(playersList);
-      drawPlayers(playersList);
+      drawPlayersEndPos(currLevel->playersList);
+      drawPlayers(currLevel->playersList);
 
-
-      glColor3ub(230,223,215);
-      drawWalls(wallsList);
-
+     
+      glPopMatrix();
+      glPushMatrix();
+        drawThumbnails(currLevel->playersList);
       glPopMatrix();
 
-      drawThumbnails(playersList);
+      if(arePlayersOnEndPos(currLevel->playersList)){
+        switchLevel(currLevel);
+      }
 
-      //drawThumbnails(playersList);
+     glDisable(GL_TEXTURE_2D);
+
+
+      /* END DRAW */
 
       keyJump = 0;
       keySwitch = 0;
@@ -147,7 +168,7 @@ void launchGame(){
         break;
 
         case SDL_JOYAXISMOTION:
-          printf("button rpesde : %d\n", e.jaxis.axis);
+          //printf("axis used : %d\n", e.jaxis.axis);
           switch(e.jaxis.axis){
             case 0 :
 
@@ -184,7 +205,7 @@ void launchGame(){
               loop = 0;
               break;
             case 'r' :
-              resetLevel(firstLevel);
+              resetLevel(currLevel);
               break;
             case SDLK_RIGHT :
               keyRight = 1;
@@ -243,7 +264,101 @@ void launchGame(){
   }
 
   //Libérations des bruitages  
-  Mix_FreeChunk(firstLevel->playersList->firstPlayer->player->son);//Libération du son de saut
+  Mix_FreeChunk(currLevel->playersList->firstPlayer->player->son);//Libération du son de saut
+
+}
+
+
+
+
+void launchMenu(){
+
+  static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
+
+ 
+
+  //drawSquareTex(0.0,100.0,"./data/textures/menu1.png");
+  //drawSquareTex(0.0,-20.0,"./data/textures/menu2.png");
+
+  int launchedGame = 0;
+  int loop = 1;
+  while(loop){
+    /* temps au début de la boucle */
+    Uint32 startTime = SDL_GetTicks();
+
+
+            /* dessin */
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glMatrixMode(GL_MODELVIEW);
+
+    glLoadIdentity();
+
+    Texture * background = initTexture("./data/textures/backgrounds/menu.jpg");
+    Texture * title      = initTexture("./data/textures/menu2.png");
+    Texture * pressEnter = initTexture("./data/textures/menu1.png");
+
+    glEnable(GL_TEXTURE_2D);
+    drawSquareTex(0.0,0.0, background);
+    drawSquareTex(0.0,100.0, title);
+    drawSquareTex(0.0,-20.0, pressEnter);
+
+
+
+
+    SDL_GL_SwapBuffers();
+
+
+    /****************
+    EVENT HANDLER
+    ******************/
+
+    SDL_Event e;
+    while(SDL_PollEvent(&e)) {
+      if(e.type == SDL_QUIT) {
+        loop = 0;
+        break;
+      }
+
+      switch(e.type) {
+
+        case SDL_KEYDOWN:
+          switch(e.key.keysym.sym){
+            case 'q' :
+            case SDLK_ESCAPE :
+              loop = 0;
+              break;
+           
+            case SDLK_RETURN :
+              launchedGame = 1;
+              loop = 0;
+            break;
+
+
+            default : break;
+            
+          }
+          break;
+          
+      }
+    }
+
+
+
+
+    Uint32 elapsedTime = SDL_GetTicks() - startTime;
+    if(elapsedTime < FRAMERATE_MILLISECONDS) {
+      SDL_Delay(FRAMERATE_MILLISECONDS - elapsedTime);
+    }
+
+  }
+
+  if(launchedGame==1) launchGame();
+
+
+
+
+
 
 }
 
