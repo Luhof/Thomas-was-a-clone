@@ -21,9 +21,9 @@ Level * initLevel(){
 
 	//set player attributes
 	Players *playersList = initPlayerList();
-	Player *thomas = createPlayer(15.0, 80.0, -45.0, 100.0, -100, -37.50, 4.0, 10.0, colors[0], "./data/saut.wav");
-	Player *marcel = createPlayer(70.0, 70.0, -30, 40.0, 100, 172.50, 4.0, 15.0, colors[1], "./data/saut.wav");
-	Player *pouity = createPlayer(60.0, 25.0, -180, 40.0, 170, 177.50, 4.0, 10.0, colors[2], "./data/saut.wav");
+	Player *thomas = createPlayer(35.0, 80.0, -50, 200.0, -100, -37.50, 4.0, 10.0, colors[0], "./data/saut.wav");
+	Player *marcel = createPlayer(70.0, 70.0, -30.0, 100.0, 200, 172.50, 4.0, 15.0, colors[1], "./data/saut.wav");
+	Player *pouity = createPlayer(60.0, 25.0, -180.0, 140.0, 70, 177.50, 4.0, 10.0, colors[2], "./data/saut.wav");
 	thomas->isCurrentPlayer = 1;
 	addPlayer(playersList, pouity);
 	addPlayer(playersList, marcel);
@@ -66,11 +66,11 @@ void resetLevel(Level * level){
 		tempPlayer->player->posX = tempPlayer->player->startPosX;
 		tempPlayer->player->posY = tempPlayer->player->startPosY;
 		if(tempPlayer->player->isCurrentPlayer==1){
-			printf("start restarting camera\n");
+			
 			level->cameraDestX = tempPlayer->player->startPosX;
 			level->cameraDestY = tempPlayer->player->startPosY;
 			level->isCameraMoving = 1;
-			printf("done restarting camera\n");
+			
 			break;
 		}
 		tempPlayer = tempPlayer->nextPlayer;
@@ -87,8 +87,11 @@ void updateCamera(Level * level){
 		tempPlayer = tempPlayer->nextPlayer;
 	}
 
-	level->cameraX = -tempPlayer->player->posX;
-	level->cameraY = -tempPlayer->player->posY;
+	if(level->isCameraMoving == 0){
+		level->cameraX = -tempPlayer->player->posX;
+		level->cameraY = -tempPlayer->player->posY;
+	}
+
 	/*if(tempPlayer->player->posX >0){
 		if(tempPlayer->player->posX - level->cameraX > 200.0){
 			//printf(">0  update camera pos X %f\n", tempPlayer->player->posX - level->cameraX);
@@ -149,6 +152,8 @@ void stepCamera(Level* level){
 			
 		}
 
+		else xDone = 1;
+
 		if(level->cameraY > level->cameraDestY){
 
 			level->cameraY -= 10.0;
@@ -166,6 +171,8 @@ void stepCamera(Level* level){
 				yDone = 1;
 			}
 		}
+
+		else yDone = 1;
 	}
 
 	if(xDone == 1 && yDone == 1)

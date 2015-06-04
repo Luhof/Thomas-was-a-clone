@@ -47,7 +47,7 @@ Players* initPlayerList();
 Player * createPlayer(float width, float height, float startPosX, float startPosY, float endPosX, float endPosY, float movespeed, float jumpspeed, Color color, char* son);
 
 void addPlayer(Players *playersList, Player *player);
-void switchCharacter(Players * playersList);
+Player * switchCharacter(Players * playersList);
 void setHSpeed(Players * playersList, int dir);
 void setVSpeed(Players * playersList, float gravity);
 

@@ -85,10 +85,12 @@ void drawPlayerEndPos(Player * thomas){
 		float height = thomas->height;
 
 		glPushMatrix();
-		glColor3ub(255,255,255);
+		glColor3ub(thomas->color.r,thomas->color.g, thomas->color.b);
 		glTranslatef(thomas->endPosX, thomas->endPosY, 0);
-		if(isPlayerOnEndPos(thomas))
+		if(isPlayerOnEndPos(thomas)){
+			glColor3ub(255, 255, 255);
 			glBegin(GL_QUADS);
+		}
 		else glBegin(GL_LINE_LOOP);
 		glVertex2f(-(width/2.0), -(height/2.0));
 		glVertex2f((width/2.0), -(height/2.0));

@@ -53,14 +53,14 @@ void launchGame(){
     
     glLoadIdentity();
     
-    if(keySwitch) switchCharacter(playersList);
-    drawThumbnails(playersList);
-
-
-    //glTranslatef(firstLevel->cameraX, firstLevel->cameraY, 1);
-
-
-
+    if(keySwitch){
+      Player * newCharacter = switchCharacter(playersList);
+      firstLevel->cameraX = newCharacter->posX;
+      firstLevel->cameraY = newCharacter->posY;
+      printf("new character X : %f - %f\n", newCharacter->posX, newCharacter->posY);
+      //firstLevel->isCameraMoving = 1;
+    }
+    
 
 
 
@@ -88,13 +88,17 @@ void launchGame(){
 
       if(arePlayersOnEndPos(playersList)) printf("you win :D\n");
 
-      updateCamera(firstLevel);
-      //stepCamera(firstLevel);
+      if(firstLevel->isCameraMoving==0)
+        updateCamera(firstLevel);
+      if(firstLevel->isCameraMoving == 1)
+        stepCamera(firstLevel);
 
       if(isAnyPlayerDead(playersList, firstLevel)==1) resetLevel(firstLevel);
-      printf("ready to translate\n");
+      
+      glPushMatrix();
+
       glTranslatef(firstLevel->cameraX, firstLevel->cameraY, 1);
-      printf("cool tranks\n");
+      
       drawPlayersEndPos(playersList);
       drawPlayers(playersList);
 
@@ -102,9 +106,15 @@ void launchGame(){
       glColor3ub(230,223,215);
       drawWalls(wallsList);
 
+      glPopMatrix();
+
+      drawThumbnails(playersList);
+
+      //drawThumbnails(playersList);
+
       keyJump = 0;
       keySwitch = 0;
-      printf("we swapper buffers K THX\n");
+      
 
     SDL_GL_SwapBuffers();
 

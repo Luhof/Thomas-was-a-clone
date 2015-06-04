@@ -68,7 +68,7 @@ void addPlayer(Players *playersList, Player *player){
 	
 }
 
-void switchCharacter(Players * playersList){
+Player * switchCharacter(Players * playersList){
 
 	Players * tempPlayer = playersList->firstPlayer;
 
@@ -78,20 +78,24 @@ void switchCharacter(Players * playersList){
 				tempPlayer = tempPlayer->nextPlayer;
 				if(tempPlayer!=NULL){
 					tempPlayer->player->isCurrentPlayer = 1;
+					return tempPlayer->player;
 					//level->isCameraMoving = 1;
 					//level->cameraDestX = tempPlayer->player->posX;
 					//level->cameraDestY = tempPlayer->player->posY;
-					break;
+					//break;
 				}
 					playersList->firstPlayer->player->isCurrentPlayer = 1;
+					return playersList->firstPlayer->player;
 					//level->isCameraMoving = 1;
 					//level->cameraDestX = playersList->firstPlayer->player->posX;
 					//level->cameraDestY = playersList->firstPlayer->tempPlayer->player->posY;
-					break;
+					//break;
 				
 			}
 			tempPlayer=tempPlayer->nextPlayer;
 		}
+
+		return NULL;
 
 	
 
