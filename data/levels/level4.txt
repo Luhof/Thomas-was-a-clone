@@ -1,0 +1,16 @@
+S 50000.0 50000.0 ./data/music/musik.wav ./data/textures/backgrounds/background3.jpg
+
+
+W 30.0 500 -1000.0 0.0
+W 30.0 500 1000.0 0.0
+W 2000.0 30.0 0.0 -100.0
+
+P 35.0 80.0 0.0 200.0 -350500.0 -350150.50 4.0 10.0 105 210 231 1
+
+T 0.0 0.0 ./data/textures/nozick.jpg 0
+T 0.0 0.0 ./data/textures/surprise.png 1
+T -500.0 0.0 ./data/textures/starry.png 1
+T 500.0 0.0 ./data/textures/starry.png 1
+T -100.0 100.0 ./data/textures/nozick.jpg 0
+T 100.0 100.0 ./data/textures/nozick.jpg 0
+T 500.0 200.0 ./data/textures/yolo.png 0

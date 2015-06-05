@@ -170,11 +170,12 @@ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPopMatrix();
 }
 
-void drawTextures(Textures * textureList){
+void drawTextures(Textures * textureList, int isFront){
 	Textures * tempTexture = textureList->firstTexture;
 	while(tempTexture!=NULL){
 		
-		drawSquareTex(tempTexture->myTexture->textureX, tempTexture->myTexture->textureY, tempTexture->myTexture);
+		if(isFront==tempTexture->myTexture->isFront)
+			drawSquareTex(tempTexture->myTexture->textureX, tempTexture->myTexture->textureY, tempTexture->myTexture);
 		
 		tempTexture = tempTexture->nextTexture;
 

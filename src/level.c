@@ -79,7 +79,7 @@ void fillLevelFromFile(Level * level, int nbStr){
   	char textureFile[100];
   	float textureX, textureY;
   	Texture * tempTexture;
-
+  	int isFront = 0;
   	
 
   	f = fopen(result, "r");
@@ -88,8 +88,7 @@ void fillLevelFromFile(Level * level, int nbStr){
     	printf("Error loading file %s\n", result);
     	exit(1);
   	}
-  	else
-  		printf("opened file %s\n", result);
+  	
 
 
   	/* Cross all lines of the file */
@@ -128,7 +127,6 @@ void fillLevelFromFile(Level * level, int nbStr){
     {
 
       tempWall = createWall(wallWidth, wallHeight, wallX, wallY);
-      printf("created wall %f/%f/%f/%f\n", wallWidth, wallHeight, wallX, wallY);
       addWall(level->wallsList, tempWall);
       continue;
     }
@@ -149,23 +147,21 @@ void fillLevelFromFile(Level * level, int nbStr){
     	tempPlayer = createPlayer(playerWidth, playerHeight, playerStartPosX, playerStartPosY, playerEndPosX, playerEndPosY, playerSpeed, playerJump, tempColor);
     	if(isCurr == 1) tempPlayer->isCurrentPlayer = 1;
     	addPlayer(level->playersList, tempPlayer);
-    	printf("created player %f/%f/%f/%f\n", playerWidth, playerHeight, playerStartPosY, playerStartPosX);
       continue;
     }
 
     /* Check for textures */
-    scanfres = sscanf(buffer, " %c %f %f %s %n", &firstchar, &textureX, &textureY, textureFile, &charCount);
-    if (scanfres == 4 && firstchar == 'T')
+    scanfres = sscanf(buffer, " %c %f %f %s %d%n", &firstchar, &textureX, &textureY, textureFile, &isFront, &charCount);
+    if (scanfres == 5 && firstchar == 'T')
     {	
     	//tempTexture = initTexturesList();
     	tempTexture = initTexture(textureFile);
     	tempTexture->textureX = textureX;
     	tempTexture->textureY = textureY;
-
+    	if(isFront == 1)tempTexture->isFront = 1;
     	addTexture(level->textureList, tempTexture);
     	//level->textureList = tempTexture->firstTexture;
     
-    	//printf("tempTexture->textureX : %f\n", level->textureList->firstTexture->myTexture->textureX);
     	
       continue;
     }
@@ -239,8 +235,6 @@ void resetLevel(Level * level){
 			level->cameraX = tempPlayer->player->startPosX;
 			level->cameraY = tempPlayer->player->startPosY;
 			//level->isCameraMoving = 1;
-			
-			break;
 		}
 		tempPlayer = tempPlayer->nextPlayer;
 	}
@@ -261,6 +255,7 @@ void updateCamera(Level * level){
 		level->cameraY = -tempPlayer->player->posY;
 	}
 
+	//basic code for smoother camera, following character
 	/*if(tempPlayer->player->posX >0){
 		if(tempPlayer->player->posX - level->cameraX > 200.0){
 			//printf(">0  update camera pos X %f\n", tempPlayer->player->posX - level->cameraX);

@@ -18,6 +18,7 @@ typedef struct _texture{
 	GLenum format;
 	float textureX;
 	float textureY;
+	int isFront;
 } Texture;
 
 typedef struct _textures{
@@ -26,9 +27,13 @@ typedef struct _textures{
 	struct _textures * firstTexture; 
 } Textures;
 
+//initialize a Texture List
 Textures * initTexturesList();
+//create a texture usable and drawable from an url
 Texture * initTexture(char * url);
 
+//frees a texture
 void freeTexture(Texture * texture);
+//add a texture to a Texture List.
 void addTexture(Textures * textureList, Texture * newTexture);
 #endif

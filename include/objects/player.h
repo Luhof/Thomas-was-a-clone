@@ -51,8 +51,10 @@ Player * switchCharacter(Players * playersList);
 void setHSpeed(Players * playersList, int dir);
 void setVSpeed(Players * playersList, float gravity);
 
+//checks ALL players collisions.
 void isColliding(Players * playersList, Walls * wallsList, int keyJump);
 
+//update players position based on their speed.
 void updatePlayersPos(Players * playersList);
 void updatePlayerPos(Player * thomas);
 

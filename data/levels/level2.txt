@@ -1,4 +1,20 @@
-S 2000.0 2000.0 ./data/music/song2.wav ./data/textures/backgrounds/background2.jpg
+S 5000.0 2000.0 ./data/music/song2.wav ./data/textures/backgrounds/background2.jpg
 
+# W largeur hauteur x y
 W 300.0 75.0 -250.0 0.0
-P 35.0 80.0 -150.0 200.0 -250 77.50 4.0 10.0 105 210 231 1
+W 50.0 45.0 38.0 0.0
+W 50.0 45.0 200.0 0.0 
+W 500.0 80.0 550.0 80.0
+W 800.0 100.0 550.0 -400.0
+W 100.0 200.0 700.0 -250.0
+W 40.0 800.0 900.0 -20.0
+W 100.0 40.0 300.0 -150.0
+
+# P largeur hauteur x y finx finy, vitesse saut r g b principal
+P 35.0 80.0 -150.0 200.0 500.0 -200.0 4.0 10.0 105 210 231 1
+P 70.0 70.0 600.0 200.0 500.0 -310.0 4.0 15.0 243 134 48 0
+P 60.0 25.0 600.0 -200.0 -360.0 70.50 4.0 10.0 155 89 182 0
+T 500.0 100.0 ./data/textures/triangles.png 1
+T 500.0 -300.0 ./data/textures/petitstriangles.png 0
+T 35.0 80.0 ./data/textures/petitstriangles.png 0
+T 600.0 200.0 ./data/textures/petitstriangles.png 0

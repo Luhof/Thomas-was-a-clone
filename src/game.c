@@ -106,8 +106,9 @@ void launchGame(){
 
       glRotatef(1.5, 0.0,0.0,1.0);
       glTranslatef(currLevel->cameraX, currLevel->cameraY, 0);
+        
         glEnable(GL_TEXTURE_2D);
-        drawTextures(currLevel->textureList);
+        drawTextures(currLevel->textureList, 0);
         glDisable(GL_TEXTURE_2D);
 
 
@@ -118,17 +119,25 @@ void launchGame(){
       drawPlayersEndPos(currLevel->playersList);
       drawPlayers(currLevel->playersList);
 
+      glPushMatrix();
+        glTranslatef(currLevel->cameraX/4.0, currLevel->cameraY/10.0, 0);
+        glEnable(GL_TEXTURE_2D);
+        drawTextures(currLevel->textureList, 1);
+        glDisable(GL_TEXTURE_2D);
+      glPopMatrix();
      
       glPopMatrix();
       glPushMatrix();
         drawThumbnails(currLevel->playersList);
       glPopMatrix();
 
+
+
       if(arePlayersOnEndPos(currLevel->playersList)){
         switchLevel(currLevel);
       }
 
-     glDisable(GL_TEXTURE_2D);
+     //glDisable(GL_TEXTURE_2D);
 
 
       /* END DRAW */
@@ -206,6 +215,9 @@ void launchGame(){
               break;
             case 'r' :
               resetLevel(currLevel);
+              break;
+            case 'n':
+              switchLevel(currLevel);
               break;
             case SDLK_RIGHT :
               keyRight = 1;
