@@ -6,3 +6,5 @@ Still some bugfixes to do but hey it's done guys.<br/>
 <br/>Makefile provided is mac only for now. A Linux executable will be available soon.
 
 <img src="http://i.imgur.com/gJs9cOE.png" title="source: imgur.com" />
+<br/>
+<img src="http://i.imgur.com/m0bmjX0.png" title="source: imgur.com" />
